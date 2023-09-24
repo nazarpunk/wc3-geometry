@@ -9,8 +9,8 @@ const draw = () => {
     const rect = div.getBoundingClientRect();
     const cw = canvas.width = rect.width * dpr;
     const ch = canvas.height = rect.height * dpr;
-    const hcw = cw * .5;
-    const hch = ch * .5;
+    const cx = cw * .5;
+    const cy = ch * .5;
     const p = 16 * dpr;
 
     ctx.fillStyle = ctx.strokeStyle = "#9de5d9";
@@ -22,24 +22,24 @@ const draw = () => {
     // === axis
     ctx.beginPath();
     // axis: x
-    ctx.moveTo(p, hch);
-    ctx.lineTo(cw - aw - p, hch);
+    ctx.moveTo(p, cy);
+    ctx.lineTo(cw - aw - p, cy);
 
     // arrow: x
-    ctx.moveTo(cw - p, hch);
-    ctx.lineTo(cw - aw - p, hch - ah)
-    ctx.lineTo(cw - aw - p, hch + ah)
-    ctx.lineTo(cw - p, hch);
+    ctx.moveTo(cw - p, cy);
+    ctx.lineTo(cw - aw - p, cy - ah)
+    ctx.lineTo(cw - aw - p, cy + ah)
+    ctx.lineTo(cw - p, cy);
 
     // axis: y
-    ctx.moveTo(hcw, ch - p);
-    ctx.lineTo(hcw, p + aw);
+    ctx.moveTo(cx, ch - p);
+    ctx.lineTo(cx, p + aw);
 
     // arrow: y
-    ctx.moveTo(hcw, p);
-    ctx.lineTo(hcw - ah, aw + p);
-    ctx.lineTo(hcw + ah, aw + p);
-    ctx.lineTo(hcw, p);
+    ctx.moveTo(cx, p);
+    ctx.lineTo(cx - ah, aw + p);
+    ctx.lineTo(cx + ah, aw + p);
+    ctx.lineTo(cx, p);
 
     ctx.closePath();
     ctx.fill();
@@ -50,14 +50,14 @@ const draw = () => {
     ctx.beginPath();
     const cs = 30 * dpr;
     // cell : x right
-    let n = hcw + cs;
+    let n = cx + cs;
     let i = 0;
     const tp = 12 * dpr;
 
     ctx.textAlign = 'left'
-    ctx.fillText(`ось X`, p, hch + tp * 2);
+    ctx.fillText(`ось X`, p, cy + tp * 2);
     ctx.save();
-    ctx.translate(hcw + tp * 2, ch - p);
+    ctx.translate(cx + tp * 2, ch - p);
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(`ось Y`, 0, 0);
     ctx.restore();
@@ -65,36 +65,36 @@ const draw = () => {
     ctx.textAlign = 'center'
     while (n < cw - aw - p) {
         i += 1;
-        ctx.moveTo(n, hch - ah);
-        ctx.lineTo(n, hch + ah);
-        ctx.fillText(`${i}`, n, hch - tp);
+        ctx.moveTo(n, cy - ah);
+        ctx.lineTo(n, cy + ah);
+        ctx.fillText(`${i}`, n, cy - tp);
 
         const x = cw - n;
-        ctx.moveTo(x, hch - ah);
-        ctx.lineTo(x, hch + ah);
-        ctx.fillText(`${-i}`, x, hch - tp);
+        ctx.moveTo(x, cy - ah);
+        ctx.lineTo(x, cy + ah);
+        ctx.fillText(`${-i}`, x, cy - tp);
         n += cs;
     }
 
-    n = hch + cs;
+    n = cy + cs;
     i = 0;
     while (n < ch - aw - p) {
         i += 1;
 
-        ctx.moveTo(hcw - ah, n);
-        ctx.lineTo(hcw + ah, n);
+        ctx.moveTo(cx - ah, n);
+        ctx.lineTo(cx + ah, n);
 
         ctx.save();
-        ctx.translate(hcw - tp, n);
+        ctx.translate(cx - tp, n);
         ctx.rotate(-Math.PI / 2);
         ctx.fillText(`${-i}`, 0, 0);
         ctx.restore();
 
-        ctx.moveTo(hcw - ah, ch - n);
-        ctx.lineTo(hcw + ah, ch - n);
+        ctx.moveTo(cx - ah, ch - n);
+        ctx.lineTo(cx + ah, ch - n);
 
         ctx.save();
-        ctx.translate(hcw - tp, ch - n);
+        ctx.translate(cx - tp, ch - n);
         ctx.rotate(-Math.PI / 2);
         ctx.fillText(`${i}`, 0, 0);
         ctx.restore();
@@ -112,10 +112,10 @@ const draw = () => {
     const mx = (Mouse.clientX - rect.x) * dpr;
     const my = (Mouse.clientY - rect.y) * dpr;
 
-    ctx.moveTo(mx, hch)
+    ctx.moveTo(mx, cy)
     ctx.lineTo(mx, my)
 
-    ctx.moveTo(hcw, my)
+    ctx.moveTo(cx, my)
     ctx.lineTo(mx, my)
 
     ctx.closePath();
@@ -123,8 +123,8 @@ const draw = () => {
 
     // == cordinates
     ctx.textAlign = 'left'
-    const ux = (mx - hcw) / cs;
-    const uy = (my - hch) / cs;
+    const ux = (mx - cx) / cs;
+    const uy = (my - cy) / cs;
 
     ctx.fillText(`x:${ux.toFixed(2)}, y:${-uy.toFixed(2)}`, mx + tp, my - tp);
 

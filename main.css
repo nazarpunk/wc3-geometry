@@ -36,13 +36,14 @@ a {
     text-align: center;
 }
 
-.ar2 {aspect-ratio: 2}
-
 .canvas {
     position: relative;
     margin-left: -1rem;
     margin-right: -1rem;
 }
+
+.canvas-001 {aspect-ratio: 2}
+.canvas-002 {aspect-ratio: 1}
 
 .canvas > canvas {
     position: absolute;
