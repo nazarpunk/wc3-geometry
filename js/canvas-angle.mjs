@@ -1,6 +1,6 @@
 import Mouse from "./mouse.mjs";
 
-const div = document.querySelector('.canvas-002');
+const div = document.querySelector('.canvas-angle');
 let visible = false;
 let canvas, ctx;
 
