@@ -1,169 +1,68 @@
-import Mouse from "./mouse.mjs";
+import {Canvas} from "./canvas.mjs";
 
-const div = document.querySelector('.canvas-axis');
-let visible = false;
-let canvas, ctx;
+Canvas.observe(document.querySelector('.canvas-axis'), c => {
+    const aw = 4;
+    const ah = 30;
+    const p = 16;
 
-const draw = () => {
-    const dpr = devicePixelRatio ?? 1;
-    const rect = div.getBoundingClientRect();
-    const cw = canvas.width = rect.width * dpr;
-    const ch = canvas.height = rect.height * dpr;
-    const cx = cw * .5;
-    const cy = ch * .5;
-    const p = 16 * dpr;
+    const cx = c.width * .5;
+    const cy = c.height * .5;
 
-    ctx.fillStyle = ctx.strokeStyle = "#9de5d9";
-    ctx.lineJoin = 'miter'
-    ctx.lineWidth = dpr;
-    const aw = 20 * dpr;
-    const ah = 5 * dpr;
+    const xc = Math.floor((c.width * .5 - p) / ah);
+    const yc = Math.floor((c.height * .5 - p) / ah);
 
-    // === axis
-    ctx.beginPath();
-    // axis: x
-    ctx.moveTo(p, cy);
-    ctx.lineTo(cw - aw - p, cy);
+    const xs = cx - ah * xc;
+    const xe = cx + ah * (xc - 1);
+    const ys = cy - ah * yc;
+    const ye = cy + ah * (yc - 1);
 
-    // arrow: x
-    ctx.moveTo(cw - p, cy);
-    ctx.lineTo(cw - aw - p, cy - ah)
-    ctx.lineTo(cw - aw - p, cy + ah)
-    ctx.lineTo(cw - p, cy);
+    c
+        .lineX(cy, xs, xe) // axis: x
+        .arrow(xe, cy, aw * 2, ah, Math.PI * .5)
+        .lineY(cx, ys, ye) // Y axis
+        .arrow(cx, ye, aw * 2, ah, 0)
+        .text('ось X', xs, cy - 20, 0, 'left', c.colorHelp)
+        .text('ось Y', cx + 20, ys, Math.PI * -.5, 'left', c.colorHelp)
 
-    // axis: y
-    ctx.moveTo(cx, ch - p);
-    ctx.lineTo(cx, p + aw);
 
-    // arrow: y
-    ctx.moveTo(cx, p);
-    ctx.lineTo(cx - ah, aw + p);
-    ctx.lineTo(cx + ah, aw + p);
-    ctx.lineTo(cx, p);
+    for (let i = 1; i <= xc; i++) {
+        if (i < xc - 1) {
+            const x = cx + ah * i;
+            c
+                .lineY(x, cy - aw, cy + aw, c.colorAxisMark)
+                .text(i.toString(), x, cy + 7, 0)
+        }
+        const x = cx - ah * i;
+        c
+            .lineY(x, cy - aw, cy + aw, c.colorAxisMark)
+            .text((-i).toString(), x, cy + 7, 0);
 
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    // == cell
-    ctx.font = `${12 * dpr}px Arial`;
-    ctx.beginPath();
-    const cs = 30 * dpr;
-    // cell : x right
-    let n = cx + cs;
-    let i = 0;
-    const tp = 12 * dpr;
-
-    ctx.textAlign = 'left'
-    ctx.fillText(`ось X`, p, cy + tp * 2);
-    ctx.save();
-    ctx.translate(cx + tp * 2, ch - p);
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillText(`ось Y`, 0, 0);
-    ctx.restore();
-
-    ctx.textAlign = 'center'
-    while (n < cw - aw - p) {
-        i += 1;
-        ctx.moveTo(n, cy - ah);
-        ctx.lineTo(n, cy + ah);
-        ctx.fillText(`${i}`, n, cy - tp);
-
-        const x = cw - n;
-        ctx.moveTo(x, cy - ah);
-        ctx.lineTo(x, cy + ah);
-        ctx.fillText(`${-i}`, x, cy - tp);
-        n += cs;
     }
 
-    n = cy + cs;
-    i = 0;
-    while (n < ch - aw - p) {
-        i += 1;
-
-        ctx.moveTo(cx - ah, n);
-        ctx.lineTo(cx + ah, n);
-
-        ctx.save();
-        ctx.translate(cx - tp, n);
-        ctx.rotate(-Math.PI / 2);
-        ctx.fillText(`${-i}`, 0, 0);
-        ctx.restore();
-
-        ctx.moveTo(cx - ah, ch - n);
-        ctx.lineTo(cx + ah, ch - n);
-
-        ctx.save();
-        ctx.translate(cx - tp, ch - n);
-        ctx.rotate(-Math.PI / 2);
-        ctx.fillText(`${i}`, 0, 0);
-        ctx.restore();
-
-        n += cs;
+    for (let i = 1; i <= yc; i++) {
+        if (i < yc - 1) {
+            const y = cy + ah * i;
+            c
+                .lineX(y, cx - aw, cx + aw, c.colorAxisMark)
+                .text(i.toString(), cx - 7, y - 4, 0, 'right')
+        }
+        const y = cy - ah * i;
+        c
+            .lineX(y, cx - aw, cx + aw, c.colorAxisMark)
+            .text((-i).toString(), cx - 7, y - 4, 0, 'right');
     }
 
-    ctx.closePath();
-    ctx.stroke();
-
-    // == cursor
-    ctx.beginPath();
-    ctx.strokeStyle = ctx.fillStyle = '#e7b622'
-
-    const mx = (Mouse.clientX - rect.x) * dpr;
-    const my = (Mouse.clientY - rect.y) * dpr;
-
-    ctx.moveTo(mx, cy)
-    ctx.lineTo(mx, my)
-
-    ctx.moveTo(cx, my)
-    ctx.lineTo(mx, my)
-
-    ctx.closePath();
-    ctx.stroke();
-
-    // == cordinates
-    ctx.textAlign = 'left'
-    const ux = (mx - cx) / cs;
-    const uy = (my - cy) / cs;
-
-    ctx.fillText(`x:${ux.toFixed(2)}, y:${-uy.toFixed(2)}`, mx + tp, my - tp);
-
-}
-
-let raf = 0;
-const redraw = () => {
-    if (!visible) return;
-    draw();
-    raf = requestAnimationFrame(redraw);
-}
-
-const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-        const v = entry.intersectionRatio > 0
-        if (visible) {
-            if (v) return
-        } else {
-            if (!v) return
-        }
-        visible = v
-
-        if (visible) {
-            canvas = document.createElement('canvas');
-            ctx = canvas.getContext("2d");
-            div.appendChild(canvas);
-            redraw();
-        } else {
-            canvas.remove();
-            canvas = null;
-            cancelAnimationFrame(raf)
-        }
+    c.lineX(c.mouseY, cx, c.mouseX, c.colorDot);
+    c.lineY(c.mouseX, cy, c.mouseY, c.colorDot);
+    c.dot(c.mouseX, c.mouseY, 5);
 
 
-    });
-}, {
-    threshold: [1, .1, 0]
-});
-observer.observe(div);
+    const ux = (c.mouseX - cx) / ah;
+    const uy = (c.mouseY - cy) / ah;
 
+    const align = ux > 0 ? 'left' : 'right';
+    const dx = ux > 0 ? 20 : -20;
+    const dy = uy > 0 ? 10 : -20;
 
-export {}
+    c.text(`X: ${ux.toFixed(1)}, Y: ${uy.toFixed(1)}`, c.mouseX + dx, c.mouseY + dy, 0, align, '#ffdd00')
+})

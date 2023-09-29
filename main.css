@@ -37,13 +37,13 @@ a {
 }
 
 .canvas {
+    background-color: #1e1e1e;
     position: relative;
     margin-left: -1rem;
     margin-right: -1rem;
 }
 
-.canvas-test {aspect-ratio: 2; background: red}
-.canvas-axis {aspect-ratio: 2}
+.canvas-axis {aspect-ratio: 1}
 .canvas-angle {aspect-ratio: 1}
 .canvas-distance-line {height: 200px}
 .canvas-distance {aspect-ratio: 2}
@@ -69,4 +69,8 @@ a {
 pre {
     font-size: 14px;
     line-height: 16px;
+    padding: 10px;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    background: black;
 }

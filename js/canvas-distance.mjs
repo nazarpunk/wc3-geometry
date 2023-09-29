@@ -1,34 +1,25 @@
-import Mouse from "./mouse.mjs";
 import {Canvas} from "./canvas.mjs";
 
-Canvas.observe(document.querySelector('.canvas-distance'), canvas => {
-    const dpr = canvas.dpr;
-    const rect = canvas.div.getBoundingClientRect();
-    const cw = canvas.canvas.width = rect.width * dpr;
-    const ch = canvas.canvas.height = rect.height * dpr;
-    const cx = cw * .5;
-    const cy = 60 * dpr;
+Canvas.observe(document.querySelector('.canvas-distance'), c => {
 
-    const ctx = canvas.ctx;
+    const dpr = c.dpr;
+    if (dpr > 0) return;
 
-    ctx.fillStyle = ctx.strokeStyle = "#9de5d9";
-    ctx.lineJoin = 'miter'
-    ctx.lineWidth = dpr;
-    ctx.font = `${12 * dpr}px Arial`;
-    ctx.textAlign = 'center'
-    const px = 40 * dpr;
-    const py = 30 * dpr;
+    const cw = c.canvas.width;
+    const ch = c.canvas.height;
 
-    const aw = 30 * dpr;
+    const ctx = c.ctx;
+    const px = 40;
+    const py = 30;
+    const aw = 30;
 
-    ctx.beginPath()
     const cntW = Math.floor((cw - px) / aw);
     for (let i = 0; i < cntW; i++) {
-        const x = px + aw * i;
-        ctx.moveTo(x, py);
-        ctx.lineTo(x, py + 10 * dpr);
-        ctx.fillText(i.toString(), x, py - 10 * dpr)
+        c.lineY(px + aw * i, py + 10 * dpr, py)
+        //ctx.fillText(i.toString(), x,)
     }
+
+    ctx.beginPath()
     ctx.moveTo(px, py);
     ctx.lineTo(px + aw * (cntW - 1), py);
 
