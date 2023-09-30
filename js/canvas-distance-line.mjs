@@ -1,4 +1,5 @@
 import {Canvas} from './canvas.mjs';
+import {clamp} from "./clamp.mjs";
 
 Canvas.observe(document.querySelector('.canvas-distance-line'), c => {
     const p = 40;
@@ -29,7 +30,6 @@ Canvas.observe(document.querySelector('.canvas-distance-line'), c => {
         c.text(xx.toFixed(1), x, cy + 50, 0, 'center', c.colorDot)
             .dot(x, cy, 5)
     }
-    const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
     const pa = cx - num * ah;
     point(pa, 'A')
@@ -53,6 +53,8 @@ Canvas.observe(document.querySelector('.canvas-distance-line'), c => {
     c.lineX(bty, pb, px, c.colorDot);
     c.lineY(pb, cy, bty, c.colorDot);
     c.lineY(px, cy, cy - 100, c.colorDot)
+
+
 
     c.text(`AX = |A - X| = |${av.toFixed(1)} - ${xv.toFixed(1)}| = ${Math.abs(av - xv).toFixed(1)}`, pa + 5, aty + 5, 0, 'left', c.colorHelp);
     c.text(`XB = |X - B| = |${xv.toFixed(1)} - ${bv.toFixed(1)}| = ${Math.abs(xv - bv).toFixed(1)}`, pb - 5, bty + 5, 0, 'right', c.colorHelp);

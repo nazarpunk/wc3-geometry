@@ -39,7 +39,7 @@ Canvas.observe(document.querySelector('.canvas-angle'), c => {
         .dot(nx, ny, 5);
 
     const dist = Math.sqrt((cx - c.mouseX) ** 2 + (cy - c.mouseY) ** 2);
-    if (dist > radius) c.line(nx, ny, c.mouseX, c.mouseY, c.colorDot);
+    if (dist > radius) c.line(nx, ny, c.mouseX, c.mouseY, c.colorAxisHelper);
 
     const trad = Math.PI * 2 - rad;
     c

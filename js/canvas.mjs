@@ -31,10 +31,10 @@ export class Canvas {
     height = 0;
     mouseX = 0;
     mouseY = 0;
-    mouseTrueY = 0;
     colorLine = '#419d30';
     colorDot = '#efaf1b'
     colorAxisMark = '#11e81a'
+    colorAxisHelper = '#7a7a7a'
     colorText = '#da0a3d'
     colorHelp = '#519bf8'
 

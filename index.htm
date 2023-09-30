@@ -53,7 +53,7 @@
     <div class="canvas canvas-distance-line"></div>
 
     <p>Как вы могли заметить, формула прекрасно работает вне зависимости от направления оси. Теперь можно воспользоваться
-        <a href="https://w.wiki/7axe" target="_blank">Теоремой Пифагора</a> и найти расстояние между точками на плоскости.
+        <a href="https://w.wiki/7axe" target="_blank">теоремой Пифагора</a> и найти расстояние между точками на плоскости.
     </p>
 
     <p>
@@ -61,17 +61,31 @@
     </p>
     <div class="canvas canvas-distance"></div>
 
+    <p>Как видите, у нас всегда получается треугольник <b>ABC</b>, где
+        <b>AB</b> является гипотенузой. Её длину несложно вычислить по
+        <a href="https://w.wiki/7axe" target="_blank">теореме Пифагора</a>:
+        <b>AB<sup>2</sup> = AC<sup>2</sup> + BC<sup>2</sup></b>.</p>
+    <pre class="canvas-distance-pre">
+AC = A<sub>x</sub> - C<sub>x</sub> = <span data-v="ac">?</span>
+BC = B<sub>y</sub> - C<sub>y</sub> = <span data-v="bc">?</span>
+AC<sup>2</sup> + BC<sup>2</sup> = <span data-v="acbc">?</span>
+AB = <i>SquareRoot</i>(AC<sup>2</sup> + BC<sup>2</sup>) = <span data-v="ab">?</span></pre>
+
+    <h3>Вычисление в игре</h3>
+    <p>В файле
+        <a href="https://github.com/nazarpunk/wc3-ujapi/blob/7ee48312a9c68dd27b810054fa11c3c986178fea/sdk/blizzard.j#L762" target="_blank">blizzard.j</a> находится специально обученная функция:
+    </p>
     <pre>function DistanceBetweenPoints takes location locA, location locB returns real
     local real dx = GetLocationX(locB) - GetLocationX(locA)
     local real dy = GetLocationY(locB) - GetLocationY(locA)
     return SquareRoot(dx * dx + dy * dy)
 endfunction</pre>
-
-    <pre>native MathPointProjectionX takes real x, real angle, real distance returns real
-native MathPointProjectionY takes real y, real angle, real distance returns real
-native MathAngleBetweenPoints takes real fromX, real fromY, real toX, real toY returns real
+    <p>
+        Если же вы являетесь счастливым обладателем
+        <a href="https://xgm.guru/p/ujapi/UjAPI-Resource" target="_blank">UjAPI</a>, то можете воспользоваться следующими нативками:
+    </p>
+    <pre>
 native MathDistanceBetweenPoints takes real fromX, real fromY, real toX, real toY returns real
-native MathAngleBetweenLocations takes location fromLoc, location toLoc returns real
 native MathDistanceBetweenLocations takes location fromLoc, location toLoc returns real
 </pre>
 
