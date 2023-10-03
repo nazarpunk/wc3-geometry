@@ -1,5 +1,5 @@
 import {Canvas} from './canvas.mjs';
-import {clamp} from "./clamp.mjs";
+import {clamp} from "./math/clamp.mjs";
 
 Canvas.observe(document.querySelector('.canvas-distance-line'), c => {
     const p = 40;

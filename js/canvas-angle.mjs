@@ -41,8 +41,9 @@ Canvas.observe(document.querySelector('.canvas-angle'), c => {
     const dist = Math.sqrt((cx - c.mouseX) ** 2 + (cy - c.mouseY) ** 2);
     if (dist > radius) c.line(nx, ny, c.mouseX, c.mouseY, c.colorAxisHelper);
 
-    const trad = Math.PI * 2 - rad;
     c
+        .lineX(cy, cx, cx + radius * .5, c.colorAxisHelper)
+        .arc(cx, cy, radius * .5, 0, rad, c.colorAxisHelper)
         .polar(cx, cy, radius, -rad)
         .rotate(Math.PI * .5)
         .text('радианы', -10, 50, 0, 'right', c.colorHelp)
@@ -50,4 +51,5 @@ Canvas.observe(document.querySelector('.canvas-angle'), c => {
         .text('градусы', -10, -80, 0, 'right', c.colorHelp)
         .text((rad * (180 / Math.PI)).toFixed(1), 10, -80, 0, 'left', c.colorHelp)
         .restore()
+
 })

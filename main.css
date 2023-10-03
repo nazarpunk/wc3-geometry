@@ -47,6 +47,7 @@ a {
 .canvas-angle {aspect-ratio: 1}
 .canvas-distance-line {height: 200px}
 .canvas-distance {aspect-ratio: 2}
+#angle-between-points {aspect-ratio: 1}
 
 .canvas > canvas {
     position: absolute;
@@ -73,4 +74,5 @@ pre {
     margin-left: -1rem;
     margin-right: -1rem;
     background: black;
+    overflow-x: auto;
 }

@@ -64,5 +64,5 @@ Canvas.observe(document.querySelector('.canvas-axis'), c => {
     const dx = ux > 0 ? 20 : -20;
     const dy = uy > 0 ? 10 : -20;
 
-    c.text(`X: ${ux.toFixed(1)}, Y: ${uy.toFixed(1)}`, c.mouseX + dx, c.mouseY + dy, 0, align, '#ffdd00')
+    c.text(`X: ${ux.toFixed(1)}, Y: ${uy.toFixed(1)}`, c.mouseX + dx, c.mouseY + dy, 0, align, c.colorHelp)
 })

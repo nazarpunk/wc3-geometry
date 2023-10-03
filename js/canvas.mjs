@@ -44,9 +44,10 @@ export class Canvas {
      * @param {number} xb
      * @param {number} yb
      * @param {string} color
+     * @param {number[]} dash
      * @return {Canvas}
      */
-    line(xa, ya, xb, yb, color = this.colorLine) {
+    line(xa, ya, xb, yb, color = this.colorLine, dash = []) {
         this.ctx.beginPath()
         this.ctx.strokeStyle = color;
         if (this.#polared) {
@@ -57,8 +58,10 @@ export class Canvas {
             yb = this.height - yb;
         }
 
-        this.ctx.moveTo(xa * this.dpr, ya * this.dpr);
-        this.ctx.lineTo(xb * this.dpr, yb * this.dpr);
+        this.ctx.moveTo(xa * this.#dpr, ya * this.#dpr);
+        this.ctx.lineTo(xb * this.#dpr, yb * this.#dpr);
+        this.ctx.setLineDash(dash.map(i => i * this.#dpr));
+
         this.ctx.stroke();
         this.ctx.closePath()
         return this;
@@ -69,10 +72,11 @@ export class Canvas {
      * @param {number} ya
      * @param {number} yb
      * @param {string?} color
+     * @param {number[]} dash
      * @return {Canvas}
      */
-    lineY(x, ya, yb, color) {
-        return this.line(x, ya, x, yb, color);
+    lineY(x, ya, yb, color, dash = []) {
+        return this.line(x, ya, x, yb, color, dash);
     }
 
     /**
@@ -80,10 +84,11 @@ export class Canvas {
      * @param {number} xa
      * @param {number} xb
      * @param {string?} color
+     * @param {number[]} dash
      * @return {Canvas}
      */
-    lineX(y, xa, xb, color) {
-        return this.line(xa, y, xb, y, color);
+    lineX(y, xa, xb, color, dash = []) {
+        return this.line(xa, y, xb, y, color, dash);
     }
 
     /**
@@ -97,14 +102,14 @@ export class Canvas {
      * @return {Canvas}
      */
     text(text, x, y, rad = 0, align = 'center', color = this.colorText) {
-        x *= this.dpr;
+        x *= this.#dpr;
         this.ctx.fillStyle = color;
         this.ctx.textAlign = align
         if (this.#polared) {
-            this.ctx.fillText(text, x, y * -this.dpr)
+            this.ctx.fillText(text, x, y * -this.#dpr)
         } else {
             this.ctx.save();
-            this.ctx.translate(x, (this.height - y) * this.dpr);
+            this.ctx.translate(x, (this.height - y) * this.#dpr);
             this.ctx.rotate(rad);
             this.ctx.fillText(text, 0, 0)
             this.ctx.restore()
@@ -131,10 +136,10 @@ export class Canvas {
      * @return {Canvas}
      */
     arrow(x, y, width, height, rad, color = this.colorLine) {
-        x *= this.dpr;
-        y = (this.height - y) * this.dpr;
-        width *= this.dpr * .5;
-        height *= -this.dpr;
+        x *= this.#dpr;
+        y = (this.height - y) * this.#dpr;
+        width *= this.#dpr * .5;
+        height *= -this.#dpr;
 
         this.ctx.save();
         this.ctx.translate(x, y);
@@ -163,11 +168,11 @@ export class Canvas {
      * @return {Canvas}
      */
     dot(x, y, radius, color = this.colorDot) {
-        x *= this.dpr
-        y = (this.height - y) * this.dpr;
+        x *= this.#dpr
+        y = (this.height - y) * this.#dpr;
         this.ctx.fillStyle = color;
         this.ctx.moveTo(x, y)
-        this.ctx.arc(x, y, radius * this.dpr, 0, 2 * Math.PI);
+        this.ctx.arc(x, y, radius * this.#dpr, 0, 2 * Math.PI);
         this.ctx.fill()
         return this
     }
@@ -182,12 +187,31 @@ export class Canvas {
     circle(x, y, radius, color = this.colorLine) {
         this.ctx.beginPath()
         this.ctx.strokeStyle = color;
-        if (this.#polared) {
-            y *= -1
-        } else {
-            y = this.height - y
-        }
-        this.ctx.arc(x * this.dpr, y * this.dpr, radius * this.dpr, 0, 2 * Math.PI);
+        if (this.#polared) y *= -1
+        else y = this.height - y
+        this.ctx.arc(x * this.#dpr, y * this.#dpr, radius * this.#dpr, 0, 2 * Math.PI);
+        this.ctx.setLineDash([])
+        this.ctx.stroke()
+        this.ctx.closePath()
+        return this
+    }
+
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} radius
+     * @param {number} startAngle
+     * @param {number} endAngle
+     * @param {string} color
+     * @return {Canvas}
+     */
+    arc(x, y, radius, startAngle, endAngle, color = this.colorLine) {
+        this.ctx.beginPath()
+        this.ctx.strokeStyle = color;
+        if (this.#polared) y *= -1
+        else y = this.height - y
+        this.ctx.arc(x * this.#dpr, y * this.#dpr, radius * this.#dpr, -endAngle, -startAngle);
+        this.ctx.setLineDash([])
         this.ctx.stroke()
         this.ctx.closePath()
         return this
@@ -203,7 +227,7 @@ export class Canvas {
     polar(dx, dy, distance, rad) {
         this.#polared = true
         this.ctx.save();
-        this.ctx.translate((dx + distance * Math.cos(rad)) * this.dpr, (dy + distance * Math.sin(rad)) * this.dpr);
+        this.ctx.translate((dx + distance * Math.cos(rad)) * this.#dpr, (dy + distance * Math.sin(rad)) * this.#dpr);
         this.ctx.rotate(rad);
         return this
     }
@@ -217,7 +241,7 @@ export class Canvas {
         return this
     }
 
-    get dpr() {
+    get #dpr() {
         return window.devicePixelRatio ?? 1;
     }
 
@@ -226,12 +250,12 @@ export class Canvas {
         const rect = this.div.getBoundingClientRect();
         this.width = rect.width
         this.height = rect.height
-        this.canvas.width = this.width * this.dpr;
-        this.canvas.height = this.height * this.dpr;
+        this.canvas.width = this.width * this.#dpr;
+        this.canvas.height = this.height * this.#dpr;
 
         this.ctx.lineJoin = 'miter'
-        this.ctx.lineWidth = this.dpr;
-        this.ctx.font = `${12 * this.dpr}px Arial`;
+        this.ctx.lineWidth = this.#dpr;
+        this.ctx.font = `${12 * this.#dpr}px Arial`;
 
         this.mouseX = clientX - rect.x;
         this.mouseY = this.height - (clientY - rect.y);

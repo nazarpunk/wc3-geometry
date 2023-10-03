@@ -9,6 +9,7 @@
     <script type="module" src="js/canvas-angle.mjs" defer></script>
     <script type="module" src="js/canvas-distance-line.mjs" defer></script>
     <script type="module" src="js/canvas-distance.mjs" defer></script>
+    <script type="module" src="js/canvas-angle-between-points.mjs" defer></script>
 </head>
 <body>
 
@@ -102,6 +103,74 @@ native MathDistanceBetweenLocations takes location fromLoc, location toLoc retur
     <p>Для простоты понимания, по сложившейся традиции, наша команда подготовила интерактивную демонстрацию.</p>
 
     <div class="canvas canvas-angle"></div>
+
+    <p>
+        Чтобы не запутаться в единицах измерения будет очень полезно запомнить их обозначения:
+    </p>
+    <ul>
+        <li>Градусы - Degrees - deg</li>
+        <li>Радианы - Radians - rad</li>
+    </ul>
+    <h3>Получение в игре</h3>
+    <p>В ваниле получить угол можно только у юнита.</p>
+    <pre>constant native GetUnitFacing takes unit whichUnit returns real</pre>
+    <p>В
+        <a href="https://xgm.guru/p/ujapi/UjAPI-Resource" target="_blank">UjAPI</a>, есстественно, функций будет немного больше.
+    </p>
+    <pre>constant native GetUnitFacing takes unit whichUnit returns real
+native GetDoodadFacing takes doodad whichDoodad returns real
+native GetSpecialEffectFacing takes effect whichEffect returns real
+native GetTrackableFacing takes trackable whichTrackable returns real
+native GetWidgetFacing takes widget whichWidget returns real
+native GetDestructableFacing takes destructable whichDestructable returns real
+native GetItemFacing takes item whichItem returns real
+native GetProjectileFacing takes projectile whichProjectile returns real
+native GetFrameSpriteFacing takes framehandle whichFrame returns real</pre>
+    <p>Все эти функции возвращают угол в градусах в диапазоне
+        <b>0 ... 360</b>. Чтобы перевести их в радианы, можете просто умножить их на константу
+        <a href="https://github.com/nazarpunk/wc3-ujapi/blob/7ee48312a9c68dd27b810054fa11c3c986178fea/sdk/blizzard.j#L18C24-L18C35" target="_blank">bj_DEGTORAD</a> или воспользоваться следующей нативкой из
+        <a href="https://xgm.guru/p/ujapi/UjAPI-Resource" target="_blank">UjAPI</a>.
+    </p>
+    <pre>native Deg2Rad takes real degrees returns real</pre>
+
+    <!-- Угол между двумя точками -->
+    <h3>Угол между двумя точками</h3>
+    <p>Как вы наверное догадались, у <a href="https://w.wiki/7dRv" target="_blank">точек</a> нет такого свойства как
+        <a href="https://w.wiki/7YCN" target="_blank">угол</a>. Под этим обычно понимают минимальный угол между
+        <a href="https://w.wiki/7dSH" target="_blank">векторами</a>. Если быть точнее, то минимальный угол, на который нужно повернуть вектор, чтоб он был сонаправлен с осью
+        <b>X</b>. Звучит конечно слишком умно, поэтому смотрите на интерацтивную демонстрацию и читайте объяснение ниже.
+    </p>
+
+    <div id="angle-between-points" class="canvas"></div>
+
+    <p>Попытаемся вычислить угол <b>AB</b>, тобишь найти минимальный угол, на который необходимо повернуть точку
+        <b>B</b> вокруг точки <b>A</b> так, чтобы <b>AB</b> совпал с <b>AB2</b>.</p>
+
+    <p>Для начала нам необходимо сместить <b>AB</b> таким образом, чтоб
+        <b>A</b> совпала с началом координат. Это неслосжно. Просто разместим там точку <b>A1</b>.</p>
+
+    <p>Теперь нам нужно спозиционировать точку <b>B1</b> относительно <b>A1</b> таким же образом, как и
+        <b>B</b> находится относительно <b>A</b>. Если вы внимательно посмотрите на
+        <a href="#angle-between-points">интерактивный пример</a> то быстро догадаетесь как это сделать:<br>
+        <b>B1<sub>x</sub></b> = <b>B<sub>x</sub></b> - <b>A<sub>x</sub></b><br>
+        <b>B1<sub>y</sub></b> = <b>B<sub>y</sub></b> - <b>A<sub>y</sub></b></p>
+
+
+    <h4>Вычисление в игре</h4>
+    <p>В файле
+        <a href="https://github.com/nazarpunk/wc3-ujapi/blob/bc7d0c95a78c49dde28148c38290d9995e5b108a/sdk/blizzard.j#L757" target="_blank">blizzard.j</a> есть специально обученная функция.
+    </p>
+    <pre>function AngleBetweenPoints takes location locA, location locB returns real
+    return bj_RADTODEG * Atan2(GetLocationY(locB) - GetLocationY(locA), GetLocationX(locB) - GetLocationX(locA))
+endfunction</pre>
+    <p>Для счастливых обладателей
+        <a href="https://xgm.guru/p/ujapi/UjAPI-Resource" target="_blank">UjAPI</a> были добавлены следуюшие нативки.
+    </p>
+    <pre>native MathAngleBetweenPoints takes real fromX, real fromY, real toX, real toY returns real
+native MathAngleBetweenLocations takes location fromLoc, location toLoc returns real</pre>
+    <p>Все они возвращают угол в градусах в диапазоне <b>-180 ... 180</b>.</p>
+
+
 </div>
 
 </body>
