@@ -1,7 +1,9 @@
-import {Canvas} from "./canvas.mjs";
-import {round} from "./math/round.mjs";
+import {Canvas} from "../canvas.mjs";
+import {round} from "../math/round.mjs";
 
-Canvas.observe(document.getElementById('angle-between-points'), c => {
+const preD = document.querySelector('.canvas-angle-between-points-pre-diff');
+const preA = document.querySelector('.canvas-angle-between-points-pre-angle');
+Canvas.observe(document.querySelector('.canvas-angle-between-points'), c => {
     const aw = 4;
     const ah = 30;
     const p = 7;
@@ -85,7 +87,12 @@ Canvas.observe(document.getElementById('angle-between-points'), c => {
     const dx = (vbx - vax) * ah + cx;
     const dy = (vby - vay) * ah + cy;
 
-    mark(dx, dy, [5])
+    const [vdx, vdy] = mark(dx, dy, [5])
+
+    const rad = Math.atan2(vdy, vdx);
+
+    if (rad > 0) c.arc(cx, cy, dist, 0, rad, c.colorDot, [5]);
+    else c.arc(cx, cy, dist, rad, 0, c.colorDot, [5]);
 
     c
         .lineX(ay, ax, ax + dist, c.colorLine, [5])
@@ -93,6 +100,8 @@ Canvas.observe(document.getElementById('angle-between-points'), c => {
         .dot(ax, ay, 5)
         .text('A', ax, ay + 10, 0, 'center', c.colorHelp)
         .line(ax, ay, bx, by, c.colorDot)
+        .text(`deg: ${(rad * 180 / Math.PI).toFixed(2)}`, bx, by + 40, 0, 'center', c.colorHelp)
+        .text(`rad: ${rad.toFixed(2)}`, bx, by + 25, 0, 'center', c.colorHelp)
         .text('B', bx, by + 10, 0, 'center', c.colorHelp)
         .dot(bx, by, 5)
         .dot(cx, cy, 5)
@@ -102,5 +111,8 @@ Canvas.observe(document.getElementById('angle-between-points'), c => {
         .text('B1', dx + 10, dy + 10, 0, 'left', c.colorHelp)
         .dot(ax + dist, ay, 5, c.colorLine);
 
+    preD.querySelector('[data-v=bx]').innerHTML = `${round(vbx)} - ${round(vax)} = ${round(vbx - vax)}`
+    preD.querySelector('[data-v=by]').innerHTML = `${round(vby)} - ${round(vay)} = ${round(vby - vay)}`
+    preA.querySelector('[data-v=a]').innerHTML = `<i>Atan2</i>(${round(vby)}, ${round(vbx)}) = ${round(rad)}`
 
 })

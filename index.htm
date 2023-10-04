@@ -5,11 +5,11 @@
     <title>WC3 Geometry</title>
     <base href="wc3-geometry">
     <link rel="stylesheet" href="main.css">
-    <script type="module" src="js/canvas-axis.mjs" defer></script>
-    <script type="module" src="js/canvas-angle.mjs" defer></script>
-    <script type="module" src="js/canvas-distance-line.mjs" defer></script>
-    <script type="module" src="js/canvas-distance.mjs" defer></script>
-    <script type="module" src="js/canvas-angle-between-points.mjs" defer></script>
+    <script type="module" src="js/example/axis.mjs" defer></script>
+    <script type="module" src="js/example/angle.mjs" defer></script>
+    <script type="module" src="js/example/distance-line.mjs" defer></script>
+    <script type="module" src="js/example/distance.mjs" defer></script>
+    <script type="module" src="js/example/angle-between-points.mjs" defer></script>
 </head>
 <body>
 
@@ -134,27 +134,42 @@ native GetFrameSpriteFacing takes framehandle whichFrame returns real</pre>
     <pre>native Deg2Rad takes real degrees returns real</pre>
 
     <!-- Угол между двумя точками -->
-    <h3>Угол между двумя точками</h3>
+    <h3 id="angle-between-points">Угол между двумя точками</h3>
     <p>Как вы наверное догадались, у <a href="https://w.wiki/7dRv" target="_blank">точек</a> нет такого свойства как
         <a href="https://w.wiki/7YCN" target="_blank">угол</a>. Под этим обычно понимают минимальный угол между
         <a href="https://w.wiki/7dSH" target="_blank">векторами</a>. Если быть точнее, то минимальный угол, на который нужно повернуть вектор, чтоб он был сонаправлен с осью
         <b>X</b>. Звучит конечно слишком умно, поэтому смотрите на интерацтивную демонстрацию и читайте объяснение ниже.
     </p>
 
-    <div id="angle-between-points" class="canvas"></div>
+    <div class="canvas canvas-angle-between-points"></div>
 
     <p>Попытаемся вычислить угол <b>AB</b>, тобишь найти минимальный угол, на который необходимо повернуть точку
         <b>B</b> вокруг точки <b>A</b> так, чтобы <b>AB</b> совпал с <b>AB2</b>.</p>
 
-    <p>Для начала нам необходимо сместить <b>AB</b> таким образом, чтоб
-        <b>A</b> совпала с началом координат. Это неслосжно. Просто разместим там точку <b>A1</b>.</p>
+    <p>Сместим <b>AB</b> таким образом, чтоб
+        <b>A</b> совпала с началом координат. Это несложно. Просто разместим там точку <b>A1</b>.</p>
 
-    <p>Теперь нам нужно спозиционировать точку <b>B1</b> относительно <b>A1</b> таким же образом, как и
+    <p>Разместим точку <b>B1</b> относительно <b>A1</b> таким же образом, как и
         <b>B</b> находится относительно <b>A</b>. Если вы внимательно посмотрите на
         <a href="#angle-between-points">интерактивный пример</a> то быстро догадаетесь как это сделать:<br>
-        <b>B1<sub>x</sub></b> = <b>B<sub>x</sub></b> - <b>A<sub>x</sub></b><br>
-        <b>B1<sub>y</sub></b> = <b>B<sub>y</sub></b> - <b>A<sub>y</sub></b></p>
+    <pre class="canvas-angle-between-points-pre-diff">B1<sub>x</sub> = B<sub>x</sub> - A<sub>x</sub> = <span data-v="bx">?</span>
+B1<sub>y</sub> = B<sub>y</sub> - A<sub>y</sub> = <span data-v="by">?</span></pre>
 
+    <p>Ну и в завершении, нам нужно вычислить
+        <a href="https://w.wiki/7eeV" target="_blank">арктангенс</a> с помощью функции
+        <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2" target="_blank">Atan2</a>.
+    </p>
+    <p>
+        <a href="https://w.wiki/7eeV" target="_blank">Арктангенс</a> — это угол между осью
+        <b>X</b> и линией, проведенной из начала координат
+        <span class="point"><b>0</b><b>0</b></span> в точку с координатами
+        <span class="point"><b>x</b><b>y</b></span>. Угол определяется в радианах в диапазоне от <b>-𝜋</b> до
+        <b>𝜋</b>, исключая <b>-𝜋</b>.
+    </p>
+
+    <p>Так, как мы уже переместили <b>A</b> в
+        <span class="point"><b>0</b><b>0</b></span>, то нам остаётся только передать координаты <b>B1</b> в функцию:</p>
+    <pre class="canvas-angle-between-points-pre-angle"><i>Atan2</i>(B1<sub>y</sub>, B1<sub>x</sub>) = <span data-v="a">?</span></pre>
 
     <h4>Вычисление в игре</h4>
     <p>В файле
@@ -168,8 +183,10 @@ endfunction</pre>
     </p>
     <pre>native MathAngleBetweenPoints takes real fromX, real fromY, real toX, real toY returns real
 native MathAngleBetweenLocations takes location fromLoc, location toLoc returns real</pre>
-    <p>Все они возвращают угол в градусах в диапазоне <b>-180 ... 180</b>.</p>
-
+    <p>Все вышеперечисленные функции возвращают угол в градусах в диапазоне <b>-180 ... 180</b>, с чем не очень удобно работать. Поэтому напишем свою функцию:</p>
+    <pre>function AngleBetweenXY takes real xa, real ya, real xb, real yb returns real
+    return Atan2(by - ay, bx - ax)
+endfunction</pre>
 
 </div>
 

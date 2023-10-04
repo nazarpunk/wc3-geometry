@@ -203,15 +203,16 @@ export class Canvas {
      * @param {number} startAngle
      * @param {number} endAngle
      * @param {string} color
+     * @param {number[]} dash
      * @return {Canvas}
      */
-    arc(x, y, radius, startAngle, endAngle, color = this.colorLine) {
+    arc(x, y, radius, startAngle, endAngle, color = this.colorLine, dash = []) {
         this.ctx.beginPath()
         this.ctx.strokeStyle = color;
         if (this.#polared) y *= -1
         else y = this.height - y
         this.ctx.arc(x * this.#dpr, y * this.#dpr, radius * this.#dpr, -endAngle, -startAngle);
-        this.ctx.setLineDash([])
+        this.ctx.setLineDash(dash.map(i => i * this.#dpr));
         this.ctx.stroke()
         this.ctx.closePath()
         return this

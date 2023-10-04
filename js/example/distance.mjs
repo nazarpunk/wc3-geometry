@@ -1,7 +1,7 @@
-import {Canvas} from "./canvas.mjs";
-import {clamp} from "./math/clamp.mjs";
-import {round} from "./math/round.mjs";
-
+import {Canvas} from "../canvas.mjs";
+import {clamp} from "../math/clamp.mjs";
+import {round} from "../math/round.mjs";
+const pre = document.querySelector('.canvas-distance-pre');
 Canvas.observe(document.querySelector('.canvas-distance'), c => {
     const px = 55;
     const py = 40;
@@ -75,12 +75,10 @@ Canvas.observe(document.querySelector('.canvas-distance'), c => {
         const BC2 = round(BC ** 2);
         const AB2 = round(AC2 + BC2);
 
-        const pre = document.querySelector('.canvas-distance-pre');
         pre.querySelector('[data-v=ac]').innerHTML = `${Ax} - ${Bx} = ${AC}`
         pre.querySelector('[data-v=bc]').innerHTML = `${By} - ${Ay} = ${BC}`
         pre.querySelector('[data-v=acbc]').innerHTML = `${AC}<sup>2</sup> + ${BC.toFixed(1)}<sup>2</sup> = ${AC2} + ${BC2} = ${AB2}`
         pre.querySelector('[data-v=ab]').innerHTML = `<i>SquareRoot</i>(${AB2}) = ${round(Math.sqrt(AB2))}`
-
     }
 
 });

@@ -1,4 +1,4 @@
-import {Canvas} from "./canvas.mjs";
+import {Canvas} from "../canvas.mjs";
 
 Canvas.observe(document.querySelector('.canvas-axis'), c => {
     const aw = 4;
