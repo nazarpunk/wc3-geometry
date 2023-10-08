@@ -1,4 +1,4 @@
-import {Canvas} from "../canvas.mjs";
+import {Canvas} from "../draw/canvas.mjs";
 import {clamp} from "../math/clamp.mjs";
 import {round} from "../math/round.mjs";
 const pre = document.querySelector('.canvas-distance-pre');
@@ -41,10 +41,10 @@ Canvas.observe(document.querySelector('.canvas-distance'), c => {
      */
     const point = (x, y) => {
         c
-            .lineX(y, x, px - 20, c.colorAxisHelper)
-            .text(round((y - py) / ah).toString(), px - 25, y - 4, 0, 'right', c.colorAxisHelper)
-            .lineY(x, y, py - 20, c.colorAxisHelper)
-            .text(round((x - px) / ah).toString(), x, py - 32, 0, 'center', c.colorAxisHelper)
+            .lineX(y, x, px - 20, c.color.point.line)
+            .text(round((y - py) / ah).toString(), px - 25, y - 4, 0, 'right', c.color.point.line)
+            .lineY(x, y, py - 20, c.color.point.line)
+            .text(round((x - px) / ah).toString(), x, py - 32, 0, 'center', c.color.point.line)
             .dot(x, y, 5)
     }
 
@@ -56,12 +56,12 @@ Canvas.observe(document.querySelector('.canvas-distance'), c => {
         .lineY(px, py, ywidth)
         .text('0', px - 14, py - 14)
         .dot(cx, cy, 5)
-        .line(ax, ay, bx, by, c.colorDot)
-        .line(ax, ay, cx, cy, c.colorDot)
-        .line(bx, by, cx, cy, c.colorDot)
-        .text('A', ax, ay + 10, 0, 'center', c.colorHelp)
-        .text('B', bx, by + 10, 0, 'center', c.colorHelp)
-        .text('C', cx, cy + 10, 0, 'center', c.colorHelp)
+        .line(ax, ay, bx, by, c.color.point.dot)
+        .line(ax, ay, cx, cy, c.color.point.dot)
+        .line(bx, by, cx, cy, c.color.point.dot)
+        .text('A', ax, ay + 10, 0, 'center', c.color.point.text)
+        .text('B', bx, by + 10, 0, 'center', c.color.point.text)
+        .text('C', cx, cy + 10, 0, 'center', c.color.point.text)
 
     {
 

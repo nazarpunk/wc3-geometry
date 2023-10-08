@@ -1,118 +1,50 @@
-import {Canvas} from "../canvas.mjs";
+import {Canvas} from "../draw/canvas.mjs";
 import {round} from "../math/round.mjs";
+import {Axis} from "../draw/axis.mjs";
 
 const preD = document.querySelector('.canvas-angle-between-points-pre-diff');
 const preA = document.querySelector('.canvas-angle-between-points-pre-angle');
+
+const axis = new Axis();
 Canvas.observe(document.querySelector('.canvas-angle-between-points'), c => {
-    const aw = 4;
-    const ah = 30;
-    const p = 7;
 
-    const cx = c.width * .5;
-    const cy = c.height * .5;
+    axis.draw(c, {
+        centerX: c.width * .5,
+        centerY: c.height * .5
+    })
 
-    const xc = Math.floor((c.width * .5 - p) / ah);
-    const yc = Math.floor((c.height * .5 - p) / ah);
+    const ax = 2.5;
+    const ay = 4.5;
 
-    const xs = cx - ah * xc;
-    const xe = cx + ah * (xc - 1);
-    const ys = cy - ah * yc;
-    const ye = cy + ah * (yc - 1);
+    const bx = axis.mouseX
+    const by = axis.mouseY
 
-    c
-        .lineX(cy, xs, xe) // axis: x
-        .arrow(xe, cy, aw * 2, ah, Math.PI * .5)
-        .lineY(cx, ys, ye) // Y axis
-        .arrow(cx, ye, aw * 2, ah, 0)
-        .text('ось X', xs, cy - 20, 0, 'left', c.colorHelp)
-        .text('ось Y', cx + 20, ys, Math.PI * -.5, 'left', c.colorHelp)
-
-
-    for (let i = 1; i <= xc; i++) {
-        if (i < xc - 1) {
-            const x = cx + ah * i;
-            c
-                .lineY(x, cy - aw, cy + aw, c.colorAxisMark)
-                .text(i.toString(), x, cy + 7, 0)
-        }
-        const x = cx - ah * i;
-        c
-            .lineY(x, cy - aw, cy + aw, c.colorAxisMark)
-            .text((-i).toString(), x, cy + 7, 0);
-
-    }
-
-    for (let i = 1; i <= yc; i++) {
-        if (i < yc - 1) {
-            const y = cy + ah * i;
-            c
-                .lineX(y, cx - aw, cx + aw, c.colorAxisMark)
-                .text(i.toString(), cx - 7, y - 4, 0, 'right')
-        }
-        const y = cy - ah * i;
-        c
-            .lineX(y, cx - aw, cx + aw, c.colorAxisMark)
-            .text((-i).toString(), cx - 7, y - 4, 0, 'right');
-    }
-
-    const ax = Math.floor(ah * 2.5 + cx);
-    const ay = Math.floor(ah * 4.5 + cy);
-    const bx = c.mouseX
-    const by = c.mouseY
-
-    /**
-     * @param {number} x
-     * @param {number} y
-     * @param {number[]} dash
-     * @return {number[]}
-     */
-    const mark = (x, y, dash = []) => {
-        const vx = (x - cx) / ah;
-        const vy = (y - cy) / ah;
-
-        c
-            .lineY(x, cy + (y > cy ? -15 : 25), y, c.colorAxisHelper, dash)
-            .text(round(vx).toString(), x, cy + (y > cy ? -30 : 30), 0, 'center', c.colorAxisHelper)
-            .lineX(y, cx + (x > cx ? -25 : 20), x, c.colorAxisHelper, dash)
-            .text(round(vy).toString(), cx + (x > cx ? -30 : 25), y - 3, 0, x > cx ? 'right' : 'left', c.colorAxisHelper)
-
-        return [vx, vy];
-    }
+    const b1x = bx - ax
+    const b1y = by - ay
 
     const dist = Math.sqrt((ax - bx) ** 2 + (ay - by) ** 2);
+    const rad = Math.atan2(b1y, b1x);
 
-    const [vax, vay] = mark(ax, ay);
-    const [vbx, vby] = mark(bx, by);
+    const b2x = ax + dist
+    const b2y = ay
 
-    const dx = (vbx - vax) * ah + cx;
-    const dy = (vby - vay) * ah + cy;
+    const [r1, r2] = rad > 0 ? [0, rad] : [rad, 0]
 
-    const [vdx, vdy] = mark(dx, dy, [5])
+    axis
+        .line(ax, ay, bx, by, {color: c.color.point.dot})
+        .line(ax, ay, b2x, b2y, {color: c.color.axis.line, dash: [5]})
+        .line(0, 0, b1x, b1y, {color: c.color.point.dot, dash: [5]})
+        .arc(0, 0, dist, r1, r2, {color: c.color.point.dot, dash: [5]})
+        .point(ax, ay, {name: 'A'})
+        .point(0, 0, {name: 'A1', track: false})
+        .point(bx, by, {
+            name: ['B', `deg: ${(rad * 180 / Math.PI).toFixed(2)}`, `rad: ${rad.toFixed(2)}`]
+        })
+        .point(b1x, b1y, {name: 'B1', dash: [5]})
+        .point(b2x, b2y, {name: 'B2', track: false, color: c.color.axis.line})
 
-    const rad = Math.atan2(vdy, vdx);
+    preD.querySelector('[data-v=bx]').innerHTML = `${round(bx).toFixed(2)} - ${round(ax).toFixed(2)} = ${round(bx - ax).toFixed(2)}`
+    preD.querySelector('[data-v=by]').innerHTML = `${round(by).toFixed(2)} - ${round(ay).toFixed(2)} = ${round(by - ay).toFixed(2)}`
+    preA.querySelector('[data-v=a]').innerHTML = `<i>Atan2</i>(${round(by).toFixed(2)}, ${round(bx).toFixed(2)}) = ${round(rad).toFixed(2)}`
 
-    if (rad > 0) c.arc(cx, cy, dist, 0, rad, c.colorDot, [5]);
-    else c.arc(cx, cy, dist, rad, 0, c.colorDot, [5]);
-
-    c
-        .lineX(ay, ax, ax + dist, c.colorLine, [5])
-        .text('B2', ax + dist, ay + 10, 0, 'center', c.colorHelp)
-        .dot(ax, ay, 5)
-        .text('A', ax, ay + 10, 0, 'center', c.colorHelp)
-        .line(ax, ay, bx, by, c.colorDot)
-        .text(`deg: ${(rad * 180 / Math.PI).toFixed(2)}`, bx, by + 40, 0, 'center', c.colorHelp)
-        .text(`rad: ${rad.toFixed(2)}`, bx, by + 25, 0, 'center', c.colorHelp)
-        .text('B', bx, by + 10, 0, 'center', c.colorHelp)
-        .dot(bx, by, 5)
-        .dot(cx, cy, 5)
-        .text('A1', cx + 10, cy + 10, 0, 'left', c.colorHelp)
-        .dot(dx, dy, 5)
-        .line(cx, cy, dx, dy, c.colorDot, [5])
-        .text('B1', dx + 10, dy + 10, 0, 'left', c.colorHelp)
-        .dot(ax + dist, ay, 5, c.colorLine);
-
-    preD.querySelector('[data-v=bx]').innerHTML = `${round(vbx)} - ${round(vax)} = ${round(vbx - vax)}`
-    preD.querySelector('[data-v=by]').innerHTML = `${round(vby)} - ${round(vay)} = ${round(vby - vay)}`
-    preA.querySelector('[data-v=a]').innerHTML = `<i>Atan2</i>(${round(vby)}, ${round(vbx)}) = ${round(rad)}`
-
-})
+});

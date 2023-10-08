@@ -1,4 +1,4 @@
-import {Canvas} from '../canvas.mjs';
+import {Canvas} from '../draw/canvas.mjs';
 import {clamp} from "../math/clamp.mjs";
 
 Canvas.observe(document.querySelector('.canvas-distance-line'), c => {
@@ -24,38 +24,35 @@ Canvas.observe(document.querySelector('.canvas-distance-line'), c => {
     c.lineX(cy, p, c.width - p)
 
     const point = (x, name) => {
-        c.text(name, x, cy + 30, 0, 'center', c.colorDot);
+        c.text(name, x, cy + 30, 0, 'center', c.color.point.dot);
         let xx = (x - cx) / ah;
 
-        c.text(xx.toFixed(1), x, cy + 50, 0, 'center', c.colorDot)
+        c.text(xx.toFixed(1), x, cy + 50, 0, 'center', c.color.point.dot)
             .dot(x, cy, 5)
     }
 
     const pa = cx - num * ah;
-    point(pa, 'A')
-
     const pb = cx + num * ah;
-    point(pb, 'B')
-
     const px = clamp(c.mouseX, cx - 10 * ah, cx + 10 * ah)
-    point(px, 'X')
-
     const aty = cy - 100;
     const bty = cy - 50
 
-    c.lineX(aty, pa, px, c.colorDot);
-    c.lineY(pa, cy, aty, c.colorDot)
+    c.lineX(aty, pa, px, c.color.point.line);
+    c.lineY(pa, cy, aty, c.color.point.line)
 
     const av = -num;
     const bv = num;
     const xv = (px - cx) / ah;
 
-    c.lineX(bty, pb, px, c.colorDot);
-    c.lineY(pb, cy, bty, c.colorDot);
-    c.lineY(px, cy, cy - 100, c.colorDot)
+    c.lineX(bty, pb, px, c.color.point.line);
+    c.lineY(pb, cy, bty, c.color.point.line);
+    c.lineY(px, cy, cy - 100, c.color.point.line)
+
+    point(pa, 'A')
+    point(pb, 'B')
+    point(px, 'X')
 
 
-
-    c.text(`AX = |A - X| = |${av.toFixed(1)} - ${xv.toFixed(1)}| = ${Math.abs(av - xv).toFixed(1)}`, pa + 5, aty + 5, 0, 'left', c.colorHelp);
-    c.text(`XB = |X - B| = |${xv.toFixed(1)} - ${bv.toFixed(1)}| = ${Math.abs(xv - bv).toFixed(1)}`, pb - 5, bty + 5, 0, 'right', c.colorHelp);
+    c.text(`AX = |A - X| = |${av.toFixed(1)} - ${xv.toFixed(1)}| = ${Math.abs(av - xv).toFixed(1)}`, pa + 5, aty + 5, 0, 'left', c.color.point.text);
+    c.text(`XB = |X - B| = |${xv.toFixed(1)} - ${bv.toFixed(1)}| = ${Math.abs(xv - bv).toFixed(1)}`, pb - 5, bty + 5, 0, 'right', c.color.point.text);
 })

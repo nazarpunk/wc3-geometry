@@ -31,12 +31,19 @@ export class Canvas {
     height = 0;
     mouseX = 0;
     mouseY = 0;
-    colorLine = '#419d30';
-    colorDot = '#efaf1b'
-    colorAxisMark = '#11e81a'
-    colorAxisHelper = '#7a7a7a'
-    colorText = '#da0a3d'
-    colorHelp = '#519bf8'
+
+    color = {
+        axis: {
+            line: '#419d30',
+            mark: '#11e81a',
+            text: '#da0a3d',
+        },
+        point: {
+            dot: '#efaf1b',
+            line: '#7a7a7a',
+            text: '#519bf8',
+        },
+    }
 
     /**
      * @param {number} xa
@@ -47,7 +54,7 @@ export class Canvas {
      * @param {number[]} dash
      * @return {Canvas}
      */
-    line(xa, ya, xb, yb, color = this.colorLine, dash = []) {
+    line(xa, ya, xb, yb, color = this.color.axis.line, dash = []) {
         this.ctx.beginPath()
         this.ctx.strokeStyle = color;
         if (this.#polared) {
@@ -101,7 +108,7 @@ export class Canvas {
      * @param {string} color
      * @return {Canvas}
      */
-    text(text, x, y, rad = 0, align = 'center', color = this.colorText) {
+    text(text, x, y, rad = 0, align = 'center', color = this.color.axis.text) {
         x *= this.#dpr;
         this.ctx.fillStyle = color;
         this.ctx.textAlign = align
@@ -135,7 +142,7 @@ export class Canvas {
      * @param {string?} color
      * @return {Canvas}
      */
-    arrow(x, y, width, height, rad, color = this.colorLine) {
+    arrow(x, y, width, height, rad, color = this.color.axis.line) {
         x *= this.#dpr;
         y = (this.height - y) * this.#dpr;
         width *= this.#dpr * .5;
@@ -164,18 +171,21 @@ export class Canvas {
      * @param {number} x
      * @param {number} y
      * @param {number} radius
-     * @param {string} color
+     * @param {string?} color
      * @return {Canvas}
      */
-    dot(x, y, radius, color = this.colorDot) {
+    dot(x, y, radius, color) {
         x *= this.#dpr
         y = (this.height - y) * this.#dpr;
-        this.ctx.fillStyle = color;
+        this.ctx.beginPath()
+        this.ctx.fillStyle = color ?? this.color.point.dot
         this.ctx.moveTo(x, y)
         this.ctx.arc(x, y, radius * this.#dpr, 0, 2 * Math.PI);
         this.ctx.fill()
+        this.ctx.closePath()
         return this
     }
+
 
     /**
      * @param {number} x
@@ -184,7 +194,7 @@ export class Canvas {
      * @param {string} color
      * @return {Canvas}
      */
-    circle(x, y, radius, color = this.colorLine) {
+    circle(x, y, radius, color = this.color.axis.line) {
         this.ctx.beginPath()
         this.ctx.strokeStyle = color;
         if (this.#polared) y *= -1
@@ -206,7 +216,7 @@ export class Canvas {
      * @param {number[]} dash
      * @return {Canvas}
      */
-    arc(x, y, radius, startAngle, endAngle, color = this.colorLine, dash = []) {
+    arc(x, y, radius, startAngle, endAngle, color = this.color.axis.line, dash = []) {
         this.ctx.beginPath()
         this.ctx.strokeStyle = color;
         if (this.#polared) y *= -1
