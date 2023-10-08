@@ -28,7 +28,7 @@ Canvas.observe(document.querySelector('.canvas-polar-offset'), c => {
         .line(bx, by, b2x, b2y, {color: c.color.point.dot, dash: [5]})
         .line(0, 0, b1x, b1y, {color: c.color.point.dot, dash: [5]})
         .point(ax, ay, {name: 'A'})
-        .point(0, 0, {name: 'A1'})
+        .point(0, 0, {name: 'A1', track: false})
         .point(bx, by, {name: 'B'})
         .point(b1x, b1y, {name: 'B1', dash: [5]})
         .point(b2x, b2y, {name: 'B2', dash: [5]})
