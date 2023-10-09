@@ -43,12 +43,9 @@ a {
     margin-right: -1rem;
 }
 
-.canvas-axis {aspect-ratio: 1}
-.canvas-angle {aspect-ratio: 1}
-.canvas-polar-offset {aspect-ratio: 1}
+.ar-1 {aspect-ratio: 1}
+.ar-2 {aspect-ratio: 2}
 .canvas-distance-line {height: 200px}
-.canvas-distance {aspect-ratio: 2}
-.canvas-angle-between-points {aspect-ratio: 1}
 
 .canvas > canvas {
     position: absolute;

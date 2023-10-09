@@ -13,6 +13,8 @@ export class Axis {
     /** @type {number} */ step
     /** @type {number} */ maxX
     /** @type {number} */ maxY
+    /** @type {number} */ maxCountX
+    /** @type {number} */ maxCountY
 
     /**
      * @param {Canvas} canvas
@@ -38,55 +40,42 @@ export class Axis {
 
         const aw = 4;
 
-        const cx = canvas.width * .5;
-        const cy = canvas.height * .5;
-
-        const xc = Math.floor((canvas.width * .5 - this.padding.x) / step);
-        const yc = Math.floor((canvas.height * .5 - this.padding.y) / step);
-
-        const xs = cx - step * xc;
-        const xe = cx + step * (xc - 1);
-        const ys = cy - step * yc;
-        const ye = cy + step * (yc - 1);
-
-        this.maxX = Math.floor((xe - this.centerX - this.padding.r) / this.step);
-        this.maxY = Math.floor((ye - this.centerY - this.padding.t) / this.step);
+        const minCountX = Math.trunc((centerX - this.padding.l) / step);
+        const minCountY = Math.trunc((centerY - this.padding.b) / step);
+        const minX = centerX - minCountX * step
+        const minY = centerY - minCountY * step
+        this.maxCountX = Math.trunc((canvas.width - centerX - this.padding.r) / step) - 1;
+        this.maxCountY = Math.trunc((canvas.height - centerY - this.padding.t) / step) - 1;
+        this.maxX = centerX + this.maxCountX * step
+        this.maxY = centerY + this.maxCountY * step
 
         canvas
-            .lineX(cy, xs, xe) // axis: x
-            .arrow(xe, cy, aw * 2, step, Math.PI * .5)
-            .lineY(cx, ys, ye) // Y axis
-            .arrow(cx, ye, aw * 2, step, 0)
-            .text('ось X', xs, cy - 20, 0, 'left', canvas.color.point.text)
-            .text('ось Y', cx + 20, ys, Math.PI * -.5, 'left', canvas.color.point.text)
+            .line(minX, centerY, this.maxX, centerY) // axis: x
+            .arrow(this.maxX, centerY, aw * 2, step, Math.PI * .5)
+            .line(centerX, minY, centerX, this.maxY) // Y axis
+            .arrow(centerX, this.maxY, aw * 2, step, 0)
+            .text('ось X', minX, centerY - 20, 0, 'left', canvas.color.point.text)
+            .text('ось Y', centerX + 20, minY, Math.PI * -.5, 'left', canvas.color.point.text)
 
 
-        for (let i = 1; i <= xc; i++) {
-            if (i < xc - 1) {
-                const x = cx + step * i;
-                canvas
-                    .lineY(x, cy - aw, cy + aw, canvas.color.axis.mark)
-                    .text(i.toString(), x, cy + 7, 0)
-            }
-            const x = cx - step * i;
+        // step: X
+        for (let i = -minCountX; i < this.maxCountX; i++) {
+            if (i === 0) continue
+            const x = centerX + i * step;
             canvas
-                .lineY(x, cy - aw, cy + aw, canvas.color.axis.mark)
-                .text((-i).toString(), x, cy + 7, 0);
-
+                .line(x, centerY - aw, x, centerY + aw, canvas.color.axis.mark)
+                .text(i.toString(), x, centerY + 7, 0)
         }
 
-        for (let i = 1; i <= yc; i++) {
-            if (i < yc - 1) {
-                const y = cy + step * i;
-                canvas
-                    .lineX(y, cx - aw, cx + aw, canvas.color.axis.mark)
-                    .text(i.toString(), cx - 7, y - 4, 0, 'right')
-            }
-            const y = cy - step * i;
+        // step: Y
+        for (let i = -minCountY; i < this.maxCountY; i++) {
+            if (i === 0) continue
+            const y = centerY + i * step;
             canvas
-                .lineX(y, cx - aw, cx + aw, canvas.color.axis.mark)
-                .text((-i).toString(), cx - 7, y - 4, 0, 'right');
+                .line(centerX - aw, y, centerX + aw, y, canvas.color.axis.mark)
+                .text(i.toString(), centerX - 7, y - 4, 0, 'right')
         }
+
 
         return this;
     }
