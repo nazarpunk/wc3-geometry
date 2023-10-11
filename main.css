@@ -36,11 +36,23 @@ a {
     text-align: center;
 }
 
-.canvas {
-    background-color: #1e1e1e;
+.canvas, .canvas-text {
     position: relative;
     margin-left: -1rem;
     margin-right: -1rem;
+    user-select: none;
+}
+
+.canvas-text {
+    height: 0;
+    pointer-events: none;
+    color: #848484;
+    transform: translate(1rem, 1rem);
+    z-index: 10;
+}
+
+.canvas {
+    background-color: #1e1e1e;
 }
 
 .ar-1 {aspect-ratio: 1}

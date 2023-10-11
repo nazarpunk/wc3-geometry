@@ -24,6 +24,10 @@ export class Canvas {
     /** @type {CanvasRenderingContext2D} */ ctx;
     #raf = 0;
     /** @type {CanvasDraw} */ #draw;
+    /** @type {?number} */ mouseLeftX = null;
+    /** @type {?number} */ mouseLeftY = null;
+    /** @type {?number} */ mouseRightX = null;
+    /** @type {?number} */ mouseRightY = null;
 
     #polared = false
 
@@ -270,9 +274,18 @@ export class Canvas {
 
         this.mouseX = clientX - rect.x;
         this.mouseY = this.height - (clientY - rect.y);
+        if (this.mouseLeftX !== null) this.mouseLeftX -= rect.x
+        if (this.mouseLeftY !== null) this.mouseLeftY = this.height - (this.mouseLeftY - rect.y)
+        if (this.mouseRightX !== null) this.mouseRightX -= rect.x
+        if (this.mouseRightY !== null) this.mouseRightY = this.height - (this.mouseRightY - rect.y)
 
         // noinspection JSValidateTypes
         this.#draw(this);
+        this.mouseLeftX = null;
+        this.mouseLeftY = null;
+        this.mouseRightX = null;
+        this.mouseRightY = null;
+
         this.#raf = requestAnimationFrame(this._redraw);
     }
 
@@ -289,6 +302,18 @@ export class Canvas {
             this.canvas = document.createElement('canvas');
             this.ctx = this.canvas.getContext('2d');
             this.div.appendChild(this.canvas);
+            this.canvas.addEventListener('click', e => {
+                e.preventDefault()
+                e.stopImmediatePropagation()
+                this.mouseLeftX = e.clientX
+                this.mouseLeftY = e.clientY
+            })
+            this.canvas.addEventListener('contextmenu', e => {
+                e.preventDefault()
+                e.stopImmediatePropagation()
+                this.mouseRightX = e.clientX
+                this.mouseRightY = e.clientY
+            })
             this._redraw();
         } else {
             this.canvas.remove();

@@ -1,13 +1,8 @@
 import {Canvas} from "../draw/canvas.mjs";
 import {Axis} from "../draw/axis.mjs";
+import {AngleNormalize} from "../math/angle-normalize.mjs";
 
 const axis = new Axis();
-
-const norm = angle => {
-    if (angle > -Math.PI && angle <= Math.PI) return angle;
-    angle = (angle + Math.PI) % (Math.PI * 2);
-    return angle < 0 ? angle + Math.PI : angle - Math.PI;
-}
 
 /*
 public static double normalize360(double angle) {
@@ -65,7 +60,7 @@ Canvas.observe(document.querySelector('.canvas-angle-normalize'), c => {
                 track: false
             })
 
-        const a = norm(alist[i])
+        const a = AngleNormalize(alist[i])
         const d = dist + 2
 
         axis.point(

@@ -1,5 +1,6 @@
 import {Padding} from "./padding.mjs";
 import {round} from "../math/round.mjs";
+import {AngleNormalize} from "../math/angle-normalize.mjs";
 
 /** @typedef { import("./canvas.mjs").Canvas } Canvas */
 
@@ -10,6 +11,10 @@ export class Axis {
     /** @type {number} */ centerY
     /** @type {number} */ mouseX
     /** @type {number} */ mouseY
+    /** @type {?number} */ mouseLeftX = null;
+    /** @type {?number} */ mouseLeftY = null;
+    /** @type {?number} */ mouseRightX = null;
+    /** @type {?number} */ mouseRightY = null;
     /** @type {number} */ step
     /** @type {number} */ maxX
     /** @type {number} */ maxY
@@ -36,6 +41,11 @@ export class Axis {
         this.padding = padding ?? Padding.zero;
         this.mouseX = (canvas.mouseX - this.centerX) / step;
         this.mouseY = (canvas.mouseY - this.centerY) / step;
+        this.mouseLeftX = canvas.mouseLeftX === null ? null : (canvas.mouseLeftX - this.centerX) / step;
+        this.mouseLeftY = canvas.mouseLeftY === null ? null : (canvas.mouseLeftY - this.centerY) / step;
+        this.mouseRightX = canvas.mouseRightX === null ? null : (canvas.mouseRightX - this.centerX) / step;
+        this.mouseRightY = canvas.mouseRightY === null ? null : (canvas.mouseRightY - this.centerY) / step;
+
         this.step = step;
 
         const aw = 4;
@@ -163,12 +173,16 @@ export class Axis {
      * @param {number} endAngle
      * @param {string} color
      * @param {number[]} dash
+     * @param short
      * @return {Axis}
      */
     arc(x, y, radius, startAngle, endAngle, {
         color = this.canvas.color.axis.line,
-        dash = []
+        dash = [],
+        short = true,
     } = {}) {
+        if (short && AngleNormalize(endAngle - startAngle) < 0) [startAngle, endAngle] = [endAngle, startAngle];
+
         this.canvas.arc(this.#cx(x), this.#cy(y), radius * this.step, startAngle, endAngle, color, dash)
         return this
     }
