@@ -13,7 +13,7 @@
     <script type="module" src="js/example/angle-between-points.mjs" defer></script>
     <script type="module" src="js/example/polar-offset.mjs" defer></script>
     <script type="module" src="js/example/angle-normalize.mjs" defer></script>
-    <script type="module" src="js/example/angle-distance.mjs" defer></script>
+    <script type="module" src="js/example/angle-of-rotation.mjs" defer></script>
 </head>
 <body>
 
@@ -304,29 +304,22 @@ endfunction</pre>
         <b>C<sup>*</sup></b> под нормализированным углом.
     </p>
 
-    <!-- Расстояние между углами -->
-    <h2 id="angle-distance" class="header">Расстояние между углами</h2>
-    <p>Не знаю, насколько это верное определение, но другого не нашлось. Расстояние между углом <b>A</b> и
-        <b>B</b> это минимальный угол на который требуется повернуться, чтобы перейти из угла <b>B</b> в угол <b>A</b>.
-    </p>
+    <!-- Угол поворота -->
+    <h2 id="angle-of-rotation" class="header">Угол поворота</h2>
+    <p>Угол поворота — это угол, на который нужно повернуть луч, исходящий из точки
+        <b>O</b>, чтобы он совпал с другим лучом, исходящим из этой же точки.</p>
 
     <div class="canvas-text">
         <div>ЛКМ - Установить <b>A</b></div>
         <div>ПКМ - Установить <b>B</b></div>
     </div>
-    <div class="canvas canvas-angle-distance ar-1"></div>
-    <p>Обозначим расстояние как <b>D</b> и попробуем найти его между <b>AB</b> и <b>AC</b>.</p>
-    <p>Добавим к обоим углам <b>-AB</b>. Таким образом мы получим угол
-        <b>AB1</b>, который равен нулю и угол <b>AC1</b>, который находится на том же расстоянии от угла
-        <b>AB1</b>, что и <b>AC</b> от <b>AB</b>.</p>
+    <div class="canvas canvas-angle-of-rotation ar-2"></div>
 
-    <p><a href="#angle-normalize">Нормализированный</a> угол
-        <b>AC1</b> и будет нашим искомым расстоянием:</p>
-    <pre class="canvas-angle-distance-pre-a"><b>AB1</b> = <b>AB</b> - <b>AB</b> = 0
-<b>AC1</b> = <b>AC</b> - <b>AB</b> = <span data-v="ac1">?</span>
-<b>D</b> = <i>AngleNormalize</i>(AC1) = <span data-v="d">?</span></pre>
-    <p>Произведём обратные вычисления, чтоб проверить правильность:</p>
-    <pre class="canvas-angle-distance-pre-b"><br><br><br><br></pre>
+    <p>Из точки <b>A</b> исходят два луча: <b>AB</b> и <b>AC</b>. Углом пороврота <b>D</b> для угла
+        <b>AB</b> по отношению к <b>AC</b> будет такое значение, при котором <b>AB + D = AB1 = AC</b>.</p>
+
+    <p>Если присмотритесь к интерактивной демонстрации, то можете заметить, что числовые значения <b>AB1</b> и
+        <b>AC</b> отличаются. Вот здесь вам и пригодится <a href="#angle-normalize">нормализация</a>. </p>
 
     <h3>Зачем это нужно?</h3>
     <p>По знаку <b>D</b> можно определить, в какую сторону поворачивать угол. Отрицательный
@@ -338,8 +331,13 @@ endfunction</pre>
 
     <h3>Вычисление в игре</h3>
     Как обычно, функций для работы с углами не завезли, поэтому пользуемся собственной функцией:
-    <pre>function AngleDistance takes real a, real b returns real
-    return AngleNormalize(AngleNormalize(b) - AngleNormalize(a))
+    <pre>function AngleOfRotation takes real a, real b returns real
+    local real d = b - a;
+    if d > bj_PI then
+         return 2 * bj_PI - d
+    else if d < -bj_PI then
+         return 2 * bj_PI + d
+    return d
 endfunction</pre>
 </div>
 
