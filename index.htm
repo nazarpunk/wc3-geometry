@@ -333,10 +333,11 @@ endfunction</pre>
     Как обычно, функций для работы с углами не завезли, поэтому пользуемся собственной функцией:
     <pre>function AngleOfRotation takes real a, real b returns real
     local real d = b - a;
-    if d > bj_PI then
-         return 2 * bj_PI - d
-    else if d < -bj_PI then
-         return 2 * bj_PI + d
+    if d > Math.PI then
+        return -(2 * Math.PI - d);
+    else if d < -Math.PI then
+        return 2 * Math.PI + d;
+    endif
     return d
 endfunction</pre>
 </div>
