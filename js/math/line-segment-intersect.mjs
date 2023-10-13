@@ -10,14 +10,13 @@
  * @return {{b: boolean, a: boolean, x: ?number, y: ?number}}
  */
 export const LineSegmentIntersect = (ax, ay, bx, by, cx, cy, dx, dy) => {
-    const result = {
+    const d = (dy - cy) * (bx - ax) - (dx - cx) * (by - ay);
+    if (d === 0) return {
         x: null,
         y: null,
         a: false,
         b: false
-    };
-    const d = (dy - cy) * (bx - ax) - (dx - cx) * (by - ay);
-    if (d === 0) return result;
+    }
 
     let a = ay - cy;
     let b = ax - cx;
@@ -26,10 +25,10 @@ export const LineSegmentIntersect = (ax, ay, bx, by, cx, cy, dx, dy) => {
     a = na / d;
     b = nb / d;
 
-    result.x = ax + a * (bx - ax);
-    result.y = ay + a * (by - ay);
-
-    if (a > 0 && a < 1) result.a = true;
-    if (b > 0 && b < 1) result.b = true;
-    return result;
+    return {
+        x: ax + a * (bx - ax),
+        y: ay + a * (by - ay),
+        a: a > 0 && a < 1,
+        b: b > 0 && b < 1
+    };
 };

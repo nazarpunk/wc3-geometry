@@ -456,14 +456,10 @@ function LineSegmentIntersect takes real ax, real ay, real bx, real by, real cx,
     LineSegmentIntersectY = ay + a * (by - ay)
 
     // Находится ли точка пересечения на первом отрезке
-    if a > 0 and a < 1 then
-        LineSegmentIntersectA = true
-    endif
+    LineSegmentIntersectA = a > 0 and a < 1
 
     // Находится ли точка пересечения на втором отрезке
-    if b > 0 and b < 1 then
-        LineSegmentIntersectB = true
-    endif
+    LineSegmentIntersectB = b > 0 and b < 1
 
     return true
 endfunction</pre>
