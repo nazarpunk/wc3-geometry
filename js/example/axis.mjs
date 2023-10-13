@@ -8,6 +8,6 @@ Canvas.observe(document.querySelector('.canvas-axis'), c => {
     axis.draw(c, {
         centerX: c.width * .5,
         centerY: c.height * .5
-    }).point(axis.mouseX, axis.mouseY);
+    }).pointXY(axis.mouseX, axis.mouseY);
 
 })

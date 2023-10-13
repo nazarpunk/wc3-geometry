@@ -24,13 +24,13 @@ Canvas.observe(document.querySelector('.canvas-polar-offset'), c => {
     const b2y = dist * Math.sin(rad) + by
 
     axis
-        .line(ax, ay, bx, by, {color: c.color.point.dot})
-        .line(bx, by, b2x, b2y, {color: c.color.point.dot, dash: [5]})
-        .line(0, 0, b1x, b1y, {color: c.color.point.dot, dash: [5]})
-        .point(ax, ay, {name: 'A'})
-        .point(0, 0, {name: 'A1', track: false})
-        .point(bx, by, {name: 'B'})
-        .point(b1x, b1y, {name: 'B1', dash: [5]})
-        .point(b2x, b2y, {name: 'B2', dash: [5]})
+        .lineXY(ax, ay, bx, by, {color: c.color.point.dot})
+        .lineXY(bx, by, b2x, b2y, {color: c.color.point.dot, dash: [5]})
+        .lineXY(0, 0, b1x, b1y, {color: c.color.point.dot, dash: [5]})
+        .pointXY(ax, ay, {name: 'A'})
+        .pointXY(0, 0, {name: 'A1', track: false})
+        .pointXY(bx, by, {name: 'B'})
+        .pointXY(b1x, b1y, {name: 'B1', dash: [5]})
+        .pointXY(b2x, b2y, {name: 'B2', dash: [5]})
 
 })

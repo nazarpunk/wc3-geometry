@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>WC3 Geometry</title>
     <base href="wc3-geometry">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="main.css">
     <script type="module" src="js/main.mjs" defer></script>
     <script type="module" src="js/example/axis.mjs" defer></script>
@@ -14,6 +15,7 @@
     <script type="module" src="js/example/polar-offset.mjs" defer></script>
     <script type="module" src="js/example/angle-normalize.mjs" defer></script>
     <script type="module" src="js/example/angle-of-rotation.mjs" defer></script>
+    <script type="module" src="js/example/line-point-perpendicular.mjs" defer></script>
 </head>
 <body>
 
@@ -332,7 +334,7 @@ endfunction</pre>
         <b>D</b>, то можно определить, принадлежит ли угол <b>AC</b>
         <a href="https://w.wiki/7kah">сектору окружности</a>.</p>
 
-    <h3>Вычисление в игре</h3>
+
     Как обычно, функций для работы с углами не завезли, поэтому пользуемся собственной функцией:
     <pre>function AngleOfRotation takes real a, real b returns real
     local real d = b - a
@@ -343,6 +345,69 @@ endfunction</pre>
     endif
     return d
 endfunction</pre>
+
+    <!-- Перпендикуляр от прямой до точки -->
+    <h2 id="line-point-perpendicular" class="header">Перпендикуляр от прямой до точки</h2>
+    <p>Для всевозможных кастов по прямой зачастую используют всевозможные алгоритмы разной степени унылости. Пора прекратить это безобразие.</p>
+
+    <div class="canvas-text">
+        <div>ЛКМ - Установить <b>A</b></div>
+        <div>ПКМ - Установить <b>B</b></div>
+    </div>
+    <div class="canvas canvas-line-point-perpendicular ar-1"></div>
+
+    <p>В данном примере у нас есть прямая, заданная двумя точками <b>A</b>, <b>B</b> и точка
+        <b>С</b>. Функция, приведённая ниже вычислит точку <b>С1</b>, которая является кратчайшим расстоянием от прямой
+        <b>AB</b> до точки <b>C</b>.</p>
+
+    <h3>Вычисление в игре</h3>
+    <p>Как вы уже наверно догадались, разработчикам абсолютно наплевать на геометрию и функции придётся писать руками:</p>
+    <pre>globals
+   real LinePointPerpendicularX = 0
+   real LinePointPerpendicularY = 0
+endglobals
+
+function LinePointPerpendicular takes real xa, real ya, real xb, real yb, real px, real py returns nothing
+    local real m
+    local real c
+    local real mPerpendicular
+    local real cPerpendicular
+
+    // Прямая, паралельная оси X
+    if ya == yb then
+        set LinePointPerpendicularX = px
+        set LinePointPerpendicularY = ya
+        return
+    endif
+
+    // Прямая, паралельная оси Y
+    if xa == xb then
+        set LinePointPerpendicularX = xa
+        set LinePointPerpendicularY = py
+        return
+    endif
+
+    set m = (yb - ya) / (xb - xa) // Находим угловой коэффициент прямой AB
+    set c = ya - m * xa // Находим свободный член c уравнения прямой AB
+    set mPerpendicular = -1 / m // Находим угловой коэффициент перпендикулярной прямой
+    set cPerpendicular = py - mPerpendicular * px // Находим свободный член c уравнения перпендикулярной прямой, проходящей через точку (x, y)
+
+    // Находим точку пересечения перпендикулярной прямой с прямой AB
+    set LinePointPerpendicularX = (cPerpendicular - c) / (m - mPerpendicular)
+    set LinePointPerpendicularY = m * xIntersection + c
+endfunction</pre>
+
+    <p>Данная функция принимает координаты двух точек, обозначающих прямую <b>xa</b>, <b>ya</b>, <b>xb</b>,
+        <b>yb</b>, координаты точки <b>px</b>,
+        <b>py</b> и станавливает в глобальных переменных координаты искомой точки.</p>
+
+    <p>Далее вы можете воспользоваться нативкой, которая учитывает коллизию юнита:</p>
+    <pre>constant native IsUnitInRangeXY takes unit whichUnit, real x, real y, real distance returns boolean</pre>
+
+    <p>Или же просто вычислить
+        <a href="#distance">расстояние</a> и использовать его в своих целях. Только не забывайте, что прямая бесконечна и вам может понадобиться
+        <a href="#angle-of-rotation">угол поворота</a>.</p>
+
 </div>
 
 </body>

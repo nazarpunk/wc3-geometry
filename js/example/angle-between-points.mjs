@@ -31,17 +31,17 @@ Canvas.observe(document.querySelector('.canvas-angle-between-points'), c => {
     const [r1, r2] = rad > 0 ? [0, rad] : [rad, 0]
 
     axis
-        .line(ax, ay, bx, by, {color: c.color.point.dot})
-        .line(ax, ay, b2x, b2y, {color: c.color.axis.line, dash: [5]})
-        .line(0, 0, b1x, b1y, {color: c.color.point.dot, dash: [5]})
-        .arc(0, 0, dist, r1, r2, {color: c.color.point.dot, dash: [5]})
-        .point(ax, ay, {name: 'A'})
-        .point(0, 0, {name: 'A1', track: false})
-        .point(bx, by, {
+        .lineXY(ax, ay, bx, by, {color: c.color.point.dot})
+        .lineXY(ax, ay, b2x, b2y, {color: c.color.axis.line, dash: [5]})
+        .lineXY(0, 0, b1x, b1y, {color: c.color.point.dot, dash: [5]})
+        .arcXY(0, 0, dist, r1, r2, {color: c.color.point.dot, dash: [5]})
+        .pointXY(ax, ay, {name: 'A'})
+        .pointXY(0, 0, {name: 'A1', track: false})
+        .pointXY(bx, by, {
             name: ['B', `deg: ${(rad * 180 / Math.PI).toFixed(2)}`, `rad: ${rad.toFixed(2)}`]
         })
-        .point(b1x, b1y, {name: 'B1', dash: [5]})
-        .point(b2x, b2y, {name: 'B2', track: false, color: c.color.axis.line})
+        .pointXY(b1x, b1y, {name: 'B1', dash: [5]})
+        .pointXY(b2x, b2y, {name: 'B2', track: false, color: c.color.axis.line})
 
     preD.querySelector('[data-v=bx]').innerHTML = `${round(bx).toFixed(2)} - ${round(ax).toFixed(2)} = ${round(bx - ax).toFixed(2)}`
     preD.querySelector('[data-v=by]').innerHTML = `${round(by).toFixed(2)} - ${round(ay).toFixed(2)} = ${round(by - ay).toFixed(2)}`

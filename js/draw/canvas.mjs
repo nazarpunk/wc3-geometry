@@ -46,7 +46,7 @@ export class Canvas {
             dot: '#efaf1b',
             line: '#7a7a7a',
             text: '#519bf8',
-        },
+        }
     }
 
     /**

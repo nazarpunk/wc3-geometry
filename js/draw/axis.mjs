@@ -1,8 +1,10 @@
 import {Padding} from "./padding.mjs";
 import {round} from "../math/round.mjs";
 import {AngleNormalize} from "../math/angle-normalize.mjs";
+import {Color} from "./color.mjs";
 
 /** @typedef { import("./canvas.mjs").Canvas } Canvas */
+/** @typedef { import("../math/point.mjs").Point } Point */
 
 export class Axis {
     /** @type {Canvas} */ canvas
@@ -90,6 +92,7 @@ export class Axis {
         return this;
     }
 
+
     /**
      * @param {number} x
      * @return {number}
@@ -107,6 +110,7 @@ export class Axis {
     }
 
     /**
+     * @deprecated
      * @param x
      * @param y
      * @param {string|string[]?} name
@@ -115,7 +119,7 @@ export class Axis {
      * @param {string?} color
      * @return {Axis}
      */
-    point(x, y, {
+    pointXY(x, y, {
         name,
         track = true,
         dash = [],
@@ -148,7 +152,31 @@ export class Axis {
         return this;
     }
 
+
     /**
+     * @param {Point} point
+     * @param {string|string[]?} name
+     * @param {boolean} track
+     * @param {number[]} dash
+     * @param {string?} color
+     * @return {Axis}
+     */
+    point(point, {
+        name,
+        track = false,
+        dash = [],
+        color = Color.point.base,
+    } = {}) {
+        return this.pointXY(point.x, point.y, {
+            name: name,
+            track: track,
+            dash: dash,
+            color: color
+        })
+    }
+
+    /**
+     * @deprecated
      * @param {number} xa
      * @param {number} ya
      * @param {number} xb
@@ -157,7 +185,7 @@ export class Axis {
      * @param {number[]} dash
      * @return {Axis}
      */
-    line(xa, ya, xb, yb, {
+    lineXY(xa, ya, xb, yb, {
         color = this.canvas.color.point.line,
         dash = []
     } = {}) {
@@ -166,6 +194,22 @@ export class Axis {
     }
 
     /**
+     * @param {Point} a
+     * @param {Point} b
+     * @param {string} color
+     * @param {number[]} dash
+     * @return {Axis}
+     */
+    line(a, b, {
+        color = Color.line.base,
+        dash = []
+    } = {}) {
+        this.canvas.line(this.#cx(a.x), this.#cy(a.y), this.#cx(b.x), this.#cy(b.y), color, dash)
+        return this
+    }
+
+    /**
+     * @deprecated
      * @param {number} x
      * @param {number} y
      * @param {number} radius
@@ -176,7 +220,7 @@ export class Axis {
      * @param short
      * @return {Axis}
      */
-    arc(x, y, radius, startAngle, endAngle, {
+    arcXY(x, y, radius, startAngle, endAngle, {
         color = this.canvas.color.axis.line,
         dash = [],
         short = true,
@@ -184,6 +228,26 @@ export class Axis {
         if (short && AngleNormalize(endAngle - startAngle) < 0) [startAngle, endAngle] = [endAngle, startAngle];
 
         this.canvas.arc(this.#cx(x), this.#cy(y), radius * this.step, startAngle, endAngle, color, dash)
+        return this
+    }
+
+    /**
+     * @param {Point} center
+     * @param {number} radius
+     * @param {number} startAngle
+     * @param {number} endAngle
+     * @param {string} color
+     * @param {number[]} dash
+     * @param short
+     * @return {Axis}
+     */
+    arc(center, radius, startAngle, endAngle, {
+        color = Color.line.base,
+        dash = [],
+        short = false,
+    } = {}) {
+        if (short && AngleNormalize(endAngle - startAngle) < 0) [startAngle, endAngle] = [endAngle, startAngle];
+        this.canvas.arc(this.#cx(center.x), this.#cy(center.y), radius * this.step, startAngle, endAngle, color, dash)
         return this
     }
 
