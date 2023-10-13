@@ -452,14 +452,10 @@ function LineSegmentIntersect takes real ax, real ay, real bx, real by, real cx,
     set a = na / d
     set b = nb / d
 
-    LineSegmentIntersectX = ax + a * (bx - ax)
-    LineSegmentIntersectY = ay + a * (by - ay)
-
-    // Находится ли точка пересечения на первом отрезке
-    LineSegmentIntersectA = a > 0 and a < 1
-
-    // Находится ли точка пересечения на втором отрезке
-    LineSegmentIntersectB = b > 0 and b < 1
+    set LineSegmentIntersectX = ax + a * (bx - ax)
+    set LineSegmentIntersectY = ay + a * (by - ay)
+    set LineSegmentIntersectA = a > 0 and a < 1 // Находится ли точка пересечения на первом отрезке
+    set LineSegmentIntersectB = b > 0 and b < 1 // Находится ли точка пересечения на втором отрезке
 
     return true
 endfunction</pre>
