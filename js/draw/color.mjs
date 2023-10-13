@@ -4,6 +4,6 @@ export const Color = {
     },
     line: {
         base: '#565151',
-        primary: '#d7c817'
+        primary: '#d7c817',
     }
 }

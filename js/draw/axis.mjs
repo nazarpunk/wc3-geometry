@@ -17,6 +17,8 @@ export class Axis {
     /** @type {?number} */ mouseLeftY = null;
     /** @type {?number} */ mouseRightX = null;
     /** @type {?number} */ mouseRightY = null;
+    /** @type {?number} */ mouseCenterX = null;
+    /** @type {?number} */ mouseCenterY = null;
     /** @type {number} */ step
     /** @type {number} */ maxX
     /** @type {number} */ maxY
@@ -47,6 +49,8 @@ export class Axis {
         this.mouseLeftY = canvas.mouseLeftY === null ? null : (canvas.mouseLeftY - this.centerY) / step;
         this.mouseRightX = canvas.mouseRightX === null ? null : (canvas.mouseRightX - this.centerX) / step;
         this.mouseRightY = canvas.mouseRightY === null ? null : (canvas.mouseRightY - this.centerY) / step;
+        this.mouseCenterX = canvas.mouseCenterX === null ? null : (canvas.mouseCenterX - this.centerX) / step;
+        this.mouseCenterY = canvas.mouseCenterY === null ? null : (canvas.mouseCenterY - this.centerY) / step;
 
         this.step = step;
 

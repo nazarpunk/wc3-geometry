@@ -16,6 +16,7 @@
     <script type="module" src="js/example/angle-normalize.mjs" defer></script>
     <script type="module" src="js/example/angle-of-rotation.mjs" defer></script>
     <script type="module" src="js/example/line-point-perpendicular.mjs" defer></script>
+    <script type="module" src="js/example/line-segment-intersect.mjs" defer></script>
 </head>
 <body>
 
@@ -407,6 +408,73 @@ endfunction</pre>
     <p>Или же просто вычислить
         <a href="#distance">расстояние</a> и использовать его в своих целях. Только не забывайте, что прямая бесконечна и вам может понадобиться
         <a href="#angle-of-rotation">угол поворота</a>.</p>
+
+    <!-- Пересечение отрезков -->
+    <h2 id="line-segment-intersect" class="header">Пересечение отрезков</h2>
+    <p>Для работы с молниями, и прочими прямыми, может понадобиться найти их пересечения чтоб заклинания не выглядели уныло. </p>
+    <div class="canvas-text">
+        <div>ЛКМ - Установить <b>A</b></div>
+        <div>ПКМ - Установить <b>B</b></div>
+        <div>ЦКМ - Установить <b>C</b></div>
+        <div class="canvas-line-segment-intersect-text"></div>
+    </div>
+    <div class="canvas canvas-line-segment-intersect ar-1"></div>
+
+    <h3>Вычисление в игре</h3>
+    <p>Чем дальше в лес, тем толще партизаны и всё яростней разработчики доказывают, что функции для работы с геометрией придётся писать руками:</p>
+    <pre>globals
+    real LineSegmentIntersectX = 0
+    real LineSegmentIntersectY = 0
+    boolean LineSegmentIntersectA = false
+    boolean LineSegmentIntersectB = false
+endglobals
+
+function LineSegmentIntersect takes real ax, real ay, real bx, real by, real cx, real cy, real dx, real dy returns boolean
+    local real a
+    local real b
+    local real na
+    local real nb
+    local real d = (dy - cy) * (bx - ax) - (dx - cx) * (by - ay)
+
+    set LineSegmentIntersectX = 0
+    set LineSegmentIntersectY = 0
+    set LineSegmentIntersectA = false
+    set LineSegmentIntersectB = false
+
+    if d == 0 then
+        return false
+    endif
+
+    set a = ay - cy
+    set b = ax - cx
+    set na = (dx - cx) * a - (dy - cy) * b
+    set nb = (bx - ax) * a - (by - ay) * b
+    set a = na / d
+    set b = nb / d
+
+    LineSegmentIntersectX = ax + a * (bx - ax)
+    LineSegmentIntersectY = ay + a * (by - ay)
+
+    // Находится ли точка пересечения на первом отрезке
+    if a > 0 and a < 1 then
+        LineSegmentIntersectA = true
+    endif
+
+    // Находится ли точка пересечения на втором отрезке
+    if b > 0 and b < 1 then
+        LineSegmentIntersectB = true
+    endif
+
+    return true
+endfunction</pre>
+
+    <p>Функция принимает восемь аргументов с координатами четырёх точек задающих два отрезка и возвращает логическую, указывающую пересекаются ли прямые в одной и только одной точке.
+        При этом в глобалках устанавливаются точка пересечения и находится ли точка пересечения на каждом отрезке.</p>
+
+    <p>Подозреваю, что вы можете запутаться, в каком порядке передавать аргументы. Посему объясню на примере точек из кропотливо сделаной интерактивной демонстрации:</p>
+    <pre><b>A<sub>x</sub></b> <b>A<sub>y</sub></b> <b>B<sub>x</sub></b> <b>B<sub>y</sub></b> <b>C<sub>x</sub></b> <b>C<sub>y</sub></b> <b>D<sub>x</sub></b> <b>D<sub>y</sub></b></pre>
+    <p>В таком случае <b>LineSegmentIntersectA</b> будет указывать, лежит ли точка пересечения на отрезке
+        <b>AB</b> и соответственно <b>LineSegmentIntersectB</b> на <b>CD</b>.</p>
 
 </div>
 

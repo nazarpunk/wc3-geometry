@@ -28,6 +28,8 @@ export class Canvas {
     /** @type {?number} */ mouseLeftY = null;
     /** @type {?number} */ mouseRightX = null;
     /** @type {?number} */ mouseRightY = null;
+    /** @type {?number} */ mouseCenterX = null;
+    /** @type {?number} */ mouseCenterY = null;
 
     #polared = false
 
@@ -278,13 +280,16 @@ export class Canvas {
         if (this.mouseLeftY !== null) this.mouseLeftY = this.height - (this.mouseLeftY - rect.y)
         if (this.mouseRightX !== null) this.mouseRightX -= rect.x
         if (this.mouseRightY !== null) this.mouseRightY = this.height - (this.mouseRightY - rect.y)
+        if (this.mouseCenterX !== null) this.mouseCenterX -= rect.x
+        if (this.mouseCenterY !== null) this.mouseCenterY = this.height - (this.mouseCenterY - rect.y)
 
-        // noinspection JSValidateTypes
         this.#draw(this);
         this.mouseLeftX = null;
         this.mouseLeftY = null;
         this.mouseRightX = null;
         this.mouseRightY = null;
+        this.mouseCenterX = null;
+        this.mouseCenterY = null;
 
         this.#raf = requestAnimationFrame(this._redraw);
     }
@@ -307,6 +312,13 @@ export class Canvas {
                 e.stopImmediatePropagation()
                 this.mouseLeftX = e.clientX
                 this.mouseLeftY = e.clientY
+            })
+            this.canvas.addEventListener('mousedown', e => {
+                if (e.button !== 1) return
+                e.preventDefault()
+                e.stopImmediatePropagation()
+                this.mouseCenterX = e.clientX
+                this.mouseCenterY = e.clientY
             })
             this.canvas.addEventListener('contextmenu', e => {
                 e.preventDefault()
