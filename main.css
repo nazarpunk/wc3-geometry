@@ -36,6 +36,31 @@ a {
     text-align: center;
 }
 
+.header-ribbon {
+    pointer-events: none;
+    user-select: none;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    margin: 0 calc((var(--s) + 26px) * -1);
+
+    --py: 10px;
+    --s: 10px;
+    --d: 10px;
+    --c: 8px;
+
+    padding: var(--py) calc(var(--s) + var(--d)) calc(var(--d) + var(--py));
+    /*noinspection CssReplaceWithShorthandSafely*/
+    background: conic-gradient(at left var(--s) bottom var(--d),
+    #0000 25%, #0008 0 37.5%, #0004 0) 0   /50% no-repeat,
+    conic-gradient(at right var(--s) bottom var(--d),
+            #0004 62.5%, #0008 0 75%, #0000 0) 100%/50% no-repeat;
+    clip-path: polygon(0 var(--d), var(--s) var(--d), var(--s) 0, calc(100% - var(--s)) 0, calc(100% - var(--s)) var(--d), 100% var(--d), calc(100% - var(--c)) calc(50% + var(--d) / 2), 100% 100%, calc(100% - var(--s) - var(--d)) 100%, calc(100% - var(--s) - var(--d)) calc(100% - var(--d)), calc(var(--s) + var(--d)) calc(100% - var(--d)), calc(var(--s) + var(--d)) 100%, 0 100%, var(--c) calc(50% + var(--d) / 2));
+    /*noinspection CssReplaceWithShorthandSafely*/
+    background-color: #470d12; /* the main color */
+    /* width: fit-content; you may need to use this in your code if the element is full width */
+}
+
 .canvas, .canvas-text {
     position: relative;
     margin-left: -1rem;

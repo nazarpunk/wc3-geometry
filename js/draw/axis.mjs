@@ -212,27 +212,9 @@ export class Axis {
         return this
     }
 
-    /**
-     * @deprecated
-     * @param {number} x
-     * @param {number} y
-     * @param {number} radius
-     * @param {number} startAngle
-     * @param {number} endAngle
-     * @param {string} color
-     * @param {number[]} dash
-     * @param short
-     * @return {Axis}
-     */
-    arcXY(x, y, radius, startAngle, endAngle, {
-        color = this.canvas.color.axis.line,
-        dash = [],
-        short = true,
-    } = {}) {
-        if (short && AngleNormalize(endAngle - startAngle) < 0) [startAngle, endAngle] = [endAngle, startAngle];
 
-        this.canvas.arc(this.#cx(x), this.#cy(y), radius * this.step, startAngle, endAngle, color, dash)
-        return this
+    polygon(points){
+
     }
 
     /**

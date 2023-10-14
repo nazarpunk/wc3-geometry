@@ -1,9 +1,12 @@
 export const Color = {
     point: {
-        base: '#e3c426'
+        base: '#efac10'
     },
     line: {
         base: '#565151',
-        primary: '#d7c817',
+        primary: '#efaf1b',
+    },
+    axis : {
+        base: '#419d30'
     }
 }

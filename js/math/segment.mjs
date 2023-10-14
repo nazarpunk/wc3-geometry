@@ -13,7 +13,7 @@ export class Segment {
      */
     set a(a) {
         this.#a = a
-        this.#update()
+        this.update()
     }
 
     /**
@@ -21,7 +21,7 @@ export class Segment {
      */
     set b(b) {
         this.#b = b
-        this.#update()
+        this.update()
     }
 
     /**
@@ -31,7 +31,7 @@ export class Segment {
     move(a, b) {
         this.#a = a
         this.#b = b
-        this.#update()
+        this.update()
     }
 
     /** @type {Point} */ #a
@@ -40,7 +40,7 @@ export class Segment {
     /** @type {number} */ distance
     /** @type {number} */ angle
 
-    #update() {
+    update() {
         const dx = this.#b.x - this.#a.x
         const dy = this.#b.y - this.#a.y
         this.angle = Math.atan2(dy, dx)

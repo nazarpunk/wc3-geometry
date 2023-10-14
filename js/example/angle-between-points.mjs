@@ -1,11 +1,24 @@
 import {Canvas} from "../draw/canvas.mjs";
 import {round} from "../math/round.mjs";
 import {Axis} from "../draw/axis.mjs";
+import {Point} from "../math/point.mjs";
+import {Segment} from "../math/segment.mjs";
+import {Color} from "../draw/color.mjs";
 
 const preD = document.querySelector('.canvas-angle-between-points-pre-diff');
 const preA = document.querySelector('.canvas-angle-between-points-pre-angle');
 
 const axis = new Axis();
+
+const A = new Point(2.5, 4.5)
+const B = new Point(0, 0)
+const B1 = new Point(0, 0)
+const B2 = new Point(0, 0)
+const O = new Point(0, 0)
+
+const AB = new Segment(A, B)
+const OB1 = new Segment(O, B1)
+
 Canvas.observe(document.querySelector('.canvas-angle-between-points'), c => {
 
     axis.draw(c, {
@@ -13,38 +26,29 @@ Canvas.observe(document.querySelector('.canvas-angle-between-points'), c => {
         centerY: c.height * .5
     })
 
-    const ax = 2.5;
-    const ay = 4.5;
+    B.move(axis.mouseX, axis.mouseY)
+    B1.move(B.x - A.x, B.y - A.y)
+    B2.move(A.x + AB.distance, A.y)
 
-    const bx = axis.mouseX
-    const by = axis.mouseY
-
-    const b1x = bx - ax
-    const b1y = by - ay
-
-    const dist = Math.sqrt((ax - bx) ** 2 + (ay - by) ** 2);
-    const rad = Math.atan2(b1y, b1x);
-
-    const b2x = ax + dist
-    const b2y = ay
-
-    const [r1, r2] = rad > 0 ? [0, rad] : [rad, 0]
+    AB.move(A, B)
+    OB1.move(O, B1)
 
     axis
-        .lineXY(ax, ay, bx, by, {color: c.color.point.dot})
-        .lineXY(ax, ay, b2x, b2y, {color: c.color.axis.line, dash: [5]})
-        .lineXY(0, 0, b1x, b1y, {color: c.color.point.dot, dash: [5]})
-        .arcXY(0, 0, dist, r1, r2, {color: c.color.point.dot, dash: [5]})
-        .pointXY(ax, ay, {name: 'A'})
-        .pointXY(0, 0, {name: 'A1', track: false})
-        .pointXY(bx, by, {
-            name: ['B', `deg: ${(rad * 180 / Math.PI).toFixed(2)}`, `rad: ${rad.toFixed(2)}`]
+        .line(A, B, {color: Color.line.primary,})
+        .line(A, B2, {color: Color.axis.base, dash: [5]})
+        .line(O, B1, {color: Color.point.base, dash: [5]})
+        .arc(O, AB.distance, 0, OB1.angle, {color: Color.point.base, dash: [5], short: true})
+        .point(A, {name: 'A', track: true})
+        .point(O, {name: 'A1'})
+        .point(B, {
+            name: ['B', `deg: ${(OB1.angle * 180 / Math.PI).toFixed(2)}`, `rad: ${OB1.angle.toFixed(2)}`],
+            track: true
         })
-        .pointXY(b1x, b1y, {name: 'B1', dash: [5]})
-        .pointXY(b2x, b2y, {name: 'B2', track: false, color: c.color.axis.line})
+        .point(B1, {name: 'B1', dash: [5], track: true})
+        .point(B2, {name: 'B2', track: false, color: Color.axis.base})
 
-    preD.querySelector('[data-v=bx]').innerHTML = `${round(bx).toFixed(2)} - ${round(ax).toFixed(2)} = ${round(bx - ax).toFixed(2)}`
-    preD.querySelector('[data-v=by]').innerHTML = `${round(by).toFixed(2)} - ${round(ay).toFixed(2)} = ${round(by - ay).toFixed(2)}`
-    preA.querySelector('[data-v=a]').innerHTML = `<i>Atan2</i>(${round(by).toFixed(2)}, ${round(bx).toFixed(2)}) = ${round(rad).toFixed(2)}`
+    preD.querySelector('[data-v=bx]').innerHTML = `${round(B.x).toFixed(2)} - ${round(A.x).toFixed(2)} = ${round(B.x - A.x).toFixed(2)}`
+    preD.querySelector('[data-v=by]').innerHTML = `${round(B.y).toFixed(2)} - ${round(A.y).toFixed(2)} = ${round(B.y - A.y).toFixed(2)}`
+    preA.querySelector('[data-v=a]').innerHTML = `<i>Atan2</i>(${round(B.y).toFixed(2)}, ${round(B.x).toFixed(2)}) = ${round(OB1.angle).toFixed(2)}`
 
 });
