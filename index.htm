@@ -558,14 +558,6 @@ function PolygonCountPoint takes integer index returns integer
     endif
 endfunction
 
-const SegmentContainPoint = (a, b, p) => {
-    if ((py - ay) * (bx - ax) - (px - ax) * (by - ay) != 0) return false
-    return Math.min(ax, bx) <= px &&
-        px <= Math.max(ax, bx) &&
-        Math.min(ay, by) <= py &&
-        py <= Math.max(ay, by);
-};
-
 function PolygonEdgeContainPoint takes real ax, real ay, real bx, real by, real px, real py returns boolean
     if (py - ay) * (bx - ax) - (px - ax) * (by - ay) != 0 then
         return false
