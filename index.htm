@@ -17,7 +17,7 @@
     <script type="module" src="js/example/angle-of-rotation.mjs" defer></script>
     <script type="module" src="js/example/line-point-perpendicular.mjs" defer></script>
     <script type="module" src="js/example/line-segment-intersect.mjs" defer></script>
-    <script type="module" src="js/example/point-in-polygon.mjs" defer></script>
+    <script type="module" src="js/example/polygon-contain-point.mjs" defer></script>
 </head>
 <body>
 
@@ -310,7 +310,12 @@ endfunction</pre>
             Нормализвция редкая штука, но именно здесь логичней всего о ней рассказать пока не забылись знания о
             <a href="#polar-offset">полярном смещении</a>.
         </p>
+
+        <div class="canvas-text">
+            <div>ЛКМ - Установить <b>A</b></div>
+        </div>
         <div class="canvas canvas-angle-normalize ar-1"></div>
+
         <p>
             Рассмотрим бытовую ситуацию - вам нужно нарисовать пентаграму с центром в точке `<b>A</b>` и одним из лучей в точке `<b>B</b>.
             Простейшим решением будет найти между лучами, в нашем случае это <b>2𝜋/5</b>, и с помощью
@@ -499,9 +504,9 @@ endfunction</pre>
 
     <!-- Принадлежность точки многоугольнику -->
     <div>
-        <h2 id="point-in-polygon" class="header header-ribbon">Принадлежность точки многоугольнику</h2>
-        <p>Зачастую стандартных прямоугольников не хватает и хочется чего-то более интересного. Например произвольных многоугольников. Только вот
-            <a href="https://w.wiki/7nBa">задача</a> на принадлежность точки к многоугольнику довольно не тривиальна.
+        <h2 id="polygon-contain-point" class="header header-ribbon">Принадлежность точки многоугольнику</h2>
+        <p>Зачастую стандартных прямоугольников не хватает и хочется чего-то более интересного. Например произвольных многоугольников. Для этого нам необходимо решить
+            <a href="https://w.wiki/7nBa">задачу о принадлежности точки многоугольнику</a>, которая имеет несколько решений в зависимости от требуемого поведения при работе с самопересекающимися многоугольниками.
         </p>
 
         <div class="canvas-text">
@@ -509,7 +514,100 @@ endfunction</pre>
             <div>ПКМ - Удалить точку</div>
             <div class="canvas-line-segment-intersect-text"></div>
         </div>
-        <div class="canvas canvas-point-in-polygon ar-1"></div>
+        <div class="canvas canvas-polygon-contain-point ar-1"></div>
+
+        <p>Мы выбрали решение, требуещее меньше всего вычислений. Пускаем из искомой точки луч паралельно оси
+            <b>X</b> и считаем количество пересечений с рёбрами. Если это количество чётное то точка находится снаружи. Если нечётное, то внутри.
+        </p>
+
+        <p>Так же мы добавили дополнительную проверку, принадлежит ли точка ребру, чтоб избежать неопределённого поведения в отельных случая.</p>
+
+
+        <h3>Вычисление в игре</h3>
+        <p>Так как волшебный JASS не даёт передавать массивы в функцию, то мы заморочимся и напишем свой менеджер многоугольников на хэштаблицах:</p>
+        <pre>globals
+    hashtable PolygonHT = InitHashtable()
+endglobals
+
+function PolygonDestroy takes integer index returns nothing
+    call FlushChildHashtable(PolygonHT, index)
+endfunction
+
+function PolygonAddPoint takes integer index, real x, real y returns nothing
+    local integer cursor
+    local integer idx
+    if HaveSavedInteger(PolygonHT, index, 0) then
+        set cursor = LoadInteger(PolygonHT, index, 0)
+    else
+        set cursor = -1
+    endif
+    set cursor = cursor + 1
+    set idx = cursor * 2
+
+    call SaveReal(PolygonHT, index, idx, x)
+    call SaveReal(PolygonHT, index, idx + 1, y)
+
+    call SaveInteger(PolygonHT, index, 0, cursor)
+endfunction
+
+function PolygonCountPoint takes integer index returns integer
+    if HaveSavedInteger(PolygonHT, index, 0) then
+        return LoadInteger(PolygonHT, index, 0) + 1
+    else
+        return 0
+    endif
+endfunction
+
+const SegmentContainPoint = (a, b, p) => {
+    if ((py - ay) * (bx - ax) - (px - ax) * (by - ay) != 0) return false;
+    return Math.min(ax, bx) <= px &&
+        px <= Math.max(ax, bx) &&
+        Math.min(ay, by) <= py &&
+        py <= Math.max(ay, by);
+};
+
+function PolygonEdgeContainPoint takes real ax, real ay, real bx, real by, real px, real py returns boolean
+    if (py - ay) * (bx - ax) - (px - ax) * (by - ay) != 0 then
+        return false
+    endif
+    return RMinBJ(ax, bx) <= px and px <= RMaxBJ(ax, bx) and RMinBJ(ay, by) <= py and py <= RMaxBJ(ay, by)
+endfunction
+
+function PolygonContainPoint takes integer index, real x, real y returns boolean
+    local integer count = PolygonCountPoint(index)
+    local boolean inside = false
+    local integer i = 0
+    local integer j = count - 1
+    local real ax
+    local real ay
+    local real bx
+    local real by
+
+    if count < 3 then
+        return false
+    endif
+
+    loop
+        exitwhen i >= count
+
+        set ax = LoadReal(PolygonHT, index, i * 2)
+        set ay = LoadReal(PolygonHT, index, i * 2 + 1)
+        set bx = LoadReal(PolygonHT, index, j * 2)
+        set by = LoadReal(PolygonHT, index, j * 2 + 1)
+
+        if PolygonEdgeContainPoint(ax, ay, bx, by, x, y) then
+            return true
+        endif
+
+        if (ay > y) != (by > y) and x < ((bx - ax) * (y - ay)) / (by - ay) + ax then
+            set inside = not inside
+        endif
+        set j = i
+        set i = i + 1
+    endloop
+
+    return inside
+endfunction</pre>
     </div>
 
 </div>

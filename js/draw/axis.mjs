@@ -31,6 +31,7 @@ export class Axis {
      * @param {number} centerX
      * @param {number} centerY
      * @param step
+     * @param grid
      * @return {Axis}
      */
     draw(canvas, {
@@ -38,6 +39,7 @@ export class Axis {
         centerX,
         centerY,
         step = 30,
+        grid = false,
     }) {
         this.canvas = canvas;
         this.centerX = centerX;
@@ -60,38 +62,56 @@ export class Axis {
         const minCountY = Math.trunc((centerY - this.padding.b) / step);
         const minX = centerX - minCountX * step
         const minY = centerY - minCountY * step
-        this.maxCountX = Math.trunc((canvas.width - centerX - this.padding.r) / step) - 1;
-        this.maxCountY = Math.trunc((canvas.height - centerY - this.padding.t) / step) - 1;
+        this.maxCountX = Math.trunc((canvas.width - centerX - this.padding.r) / step) + (grid ? 0 : -1);
+        this.maxCountY = Math.trunc((canvas.height - centerY - this.padding.t) / step) + (grid ? 0 : -1);
         this.maxX = centerX + this.maxCountX * step
         this.maxY = centerY + this.maxCountY * step
 
-        canvas
-            .line(minX, centerY, this.maxX, centerY) // axis: x
-            .arrow(this.maxX, centerY, aw * 2, step, Math.PI * .5)
-            .line(centerX, minY, centerX, this.maxY) // Y axis
-            .arrow(centerX, this.maxY, aw * 2, step, 0)
-            .text('ось X', minX, centerY - 20, 0, 'left', canvas.color.point.text)
-            .text('ось Y', centerX + 20, minY, Math.PI * -.5, 'left', canvas.color.point.text)
+        if (grid) {
+            // grid: X
+            for (let i = -minCountX; i <= this.maxCountX; i++) {
+                const x = centerX + i * step;
+                canvas.line(x, 0, x, canvas.height, Color.axis.grid)
+            }
+            // grid: Y
+            for (let i = -minCountY; i <= this.maxCountY; i++) {
+                const y = centerY + i * step;
+                canvas.line(0, y, canvas.width, y, Color.axis.grid)
+            }
+            canvas
+                .line(0, centerY, canvas.width, centerY, Color.axis.base)
+                .line(centerX, 0, centerX, canvas.height, Color.axis.base)
+        } else {
+            canvas
+                .line(minX, centerY, this.maxX, centerY, Color.axis.base)
+                .line(centerX, minY, centerX, this.maxY, Color.axis.base)
+                .arrow(this.maxX, centerY, aw * 2, step, Math.PI * .5)
+                .arrow(centerX, this.maxY, aw * 2, step, 0)
+                .text('ось X', minX, centerY - 20, 0, 'left', Color.point.name)
+                .text('ось Y', centerX + 20, minY, Math.PI * -.5, 'left', Color.point.name)
+        }
 
 
         // step: X
-        for (let i = -minCountX; i < this.maxCountX; i++) {
+        for (let i = -minCountX; i <= this.maxCountX; i++) {
             if (i === 0) continue
+            if (!grid && i === this.maxCountX) continue
+
             const x = centerX + i * step;
             canvas
-                .line(x, centerY - aw, x, centerY + aw, canvas.color.axis.mark)
+                .line(x, centerY - aw, x, centerY + aw, Color.axis.step)
                 .text(i.toString(), x, centerY + 7, 0)
         }
 
         // step: Y
-        for (let i = -minCountY; i < this.maxCountY; i++) {
+        for (let i = -minCountY; i <= this.maxCountY; i++) {
             if (i === 0) continue
+            if (!grid && i === this.maxCountY) continue
             const y = centerY + i * step;
             canvas
-                .line(centerX - aw, y, centerX + aw, y, canvas.color.axis.mark)
+                .line(centerX - aw, y, centerX + aw, y, Color.axis.step)
                 .text(i.toString(), centerX - 7, y - 4, 0, 'right')
         }
-
 
         return this;
     }
@@ -114,50 +134,6 @@ export class Axis {
     }
 
     /**
-     * @deprecated
-     * @param x
-     * @param y
-     * @param {string|string[]?} name
-     * @param {boolean} track
-     * @param {number[]} dash
-     * @param {string?} color
-     * @return {Axis}
-     */
-    pointXY(x, y, {
-        name,
-        track = true,
-        dash = [],
-        color = this.canvas.color.point.dot,
-    } = {}) {
-        const px = this.#cx(x);
-        const py = this.#cy(y);
-
-        const trackColor = this.canvas.color.point.line;
-        if (track) this.canvas
-            .lineY(px, this.centerY + (y > 0 ? -15 : 25), py, trackColor, dash)
-            .text(round(x).toFixed(2), px, this.centerY + (y > 0 ? -30 : 30), 0, 'center', trackColor)
-            .lineX(py, this.centerX + (x > 0 ? -25 : 20), px, trackColor, dash)
-            .text(round(y).toFixed(2), this.centerX + (x > 0 ? -30 : 25), py - 3, 0, x > 0 ? 'right' : 'left', trackColor)
-
-        this.canvas.dot(px, py, 5, color)
-
-
-        if (name) {
-            if (Array.isArray(name)) {
-                for (let i = 0; i < name.length; i++) {
-                    this.canvas.text(name[i], px, py + 10 + 15 * i, 0, 'center', this.canvas.color.point.text)
-                }
-            } else {
-                this.canvas.text(name, px, py + 10, 0, 'center', this.canvas.color.point.text);
-            }
-
-        }
-
-        return this;
-    }
-
-
-    /**
      * @param {Point} point
      * @param {string|string[]?} name
      * @param {boolean} track
@@ -170,31 +146,32 @@ export class Axis {
         track = false,
         dash = [],
         color = Color.point.base,
-    } = {}) {
-        return this.pointXY(point.x, point.y, {
-            name: name,
-            track: track,
-            dash: dash,
-            color: color
-        })
-    }
 
-    /**
-     * @deprecated
-     * @param {number} xa
-     * @param {number} ya
-     * @param {number} xb
-     * @param {number} yb
-     * @param {string} color
-     * @param {number[]} dash
-     * @return {Axis}
-     */
-    lineXY(xa, ya, xb, yb, {
-        color = this.canvas.color.point.line,
-        dash = []
     } = {}) {
-        this.canvas.line(this.#cx(xa), this.#cy(ya), this.#cx(xb), this.#cy(yb), color, dash)
-        return this
+        const px = this.#cx(point.x);
+        const py = this.#cy(point.y);
+
+        const trackColor = Color.line.base;
+        if (track) this.canvas
+            .line(px, this.centerY + (point.y > 0 ? -15 : 25), px, py, trackColor, dash)
+            .text(round(point.x).toFixed(2), px, this.centerY + (point.y > 0 ? -30 : 30), 0, 'center', trackColor)
+            .line(this.centerX + (point.x > 0 ? -25 : 20), py, px, py, trackColor, dash)
+            .text(round(point.y).toFixed(2), this.centerX + (point.x > 0 ? -30 : 25), py - 3, 0, point.x > 0 ? 'right' : 'left', trackColor)
+
+        this.canvas.dot(px, py, 5, color)
+
+        if (name) {
+            if (Array.isArray(name)) {
+                for (let i = 0; i < name.length; i++) {
+                    this.canvas.text(name[i], px, py + 10 + 15 * i, 0, 'center', Color.point.name)
+                }
+            } else {
+                this.canvas.text(name, px, py + 10, 0, 'center', Color.point.name);
+            }
+
+        }
+
+        return this;
     }
 
     /**

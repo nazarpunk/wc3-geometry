@@ -2,16 +2,25 @@ import {Canvas} from "../draw/canvas.mjs";
 import {Axis} from "../draw/axis.mjs";
 import {AngleNormalize} from "../math/angle-normalize.mjs";
 import {Point} from "../math/point.mjs";
+import {Color} from "../draw/color.mjs";
 
 const axis = new Axis();
 
+const A = new Point(1.5, 2.5)
+const B = new Point(0, 0)
+
+const AB = A.segment(B)
+
+/** @type {Point[]} */
 const points = [
-    new Point(0, 0),
+    B,
     new Point(0, 0),
     new Point(0, 0),
     new Point(0, 0),
     new Point(0, 0),
 ]
+
+const angles = points.map(() => 0)
 
 Canvas.observe(document.querySelector('.canvas-angle-normalize'), c => {
 
@@ -20,58 +29,29 @@ Canvas.observe(document.querySelector('.canvas-angle-normalize'), c => {
         centerY: c.height * .5
     })
 
-    const ax = axis.maxCountX * .5
-    const ay = axis.maxCountY * .5
-    const bx = axis.mouseX
-    const by = axis.mouseY
+    if (axis.mouseLeftX !== null) A.move(axis.mouseLeftX, axis.mouseLeftY)
+    B.move(axis.mouseX, axis.mouseY)
+    AB.update()
 
-    const dist = Math.sqrt((bx - ax) ** 2 + (by - ay) ** 2);
-    const rad = Math.atan2(by - ay, bx - ax);
-    const da = Math.PI * 2 / 5;
+    const da = Math.PI * 2 / points.length;
 
-    const xlist = [bx];
-    const ylist = [by];
-    const alist = [rad];
-
-    for (let i = 1; i <= 5; i++) {
-        const a = rad + da * i
-        xlist.push(Math.cos(a) * dist + ax)
-        ylist.push(Math.sin(a) * dist + ay)
-        alist.push(a)
+    for (let i = 0; i < points.length; i++) {
+        angles[i] = AB.angle + da * i
+        points[i].fromPoint(A).polar(angles[i], AB.distance);
     }
 
-    const line = (a, b) => axis.lineXY(xlist[a], ylist[a], xlist[b], ylist[b], {color: c.color.point.line})
-
-    line(0, 2)
-    line(2, 4)
-    line(4, 1)
-    line(1, 3)
-    line(3, 0)
+    for (let i = 0; i < points.length; i++) {
+        axis.line(points[i], points[(i + 2) % 5])
+    }
 
     axis
-        .lineXY(ax, ay, bx, by, {color: c.color.point.dot})
-        .pointXY(ax, ay, {name: 'A', track: false})
+        .line(A, B, {color: Color.line.primary})
+        .point(A, {name: 'A'})
 
-    for (let i = 0; i <= 4; i++) {
+    for (let i = 0; i < points.length; i++) {
         const n = i > 0 ? i : '';
-        axis
-            .pointXY(xlist[i], ylist[i], {
-                name: [`B${n}`, alist[i].toFixed(2)],
-                track: false
-            })
-
-        const a = AngleNormalize(alist[i])
-        const d = dist + 2
-
-        axis.pointXY(
-            Math.cos(a) * d + ax,
-            Math.sin(a) * d + ay,
-            {
-                name: [`C${n}`, a.toFixed(2)],
-                track: false
-            }
-        )
-
+        axis.point(points[i], {name: [`B${n}`, angles[i].toFixed(2)]})
+        const a = AngleNormalize(angles[i])
+        axis.point(points[i].polar(a, 2), {name: [`C${n}`, a.toFixed(2)]})
     }
-
 })

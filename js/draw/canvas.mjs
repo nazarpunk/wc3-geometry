@@ -3,6 +3,8 @@
  * @param {Canvas} canvas
  */
 
+import {Color} from "./color.mjs";
+
 /** @typedef { import("../math/point.mjs").Point } Point */
 
 const map = new Map()
@@ -40,6 +42,26 @@ export class Canvas {
     mouseX = 0;
     mouseY = 0;
 
+    /**
+     * @param {number} x
+     * @return {number}
+     */
+    #cx(x) {
+        return x * this.#dpr
+    }
+
+    /**
+     * @param {number} y
+     * @return {number}
+     */
+    #cy(y) {
+        return (this.height - y) * this.#dpr
+    }
+
+    /**
+     * @deprecated
+     * @type {{axis: {line: string, text: string, mark: string}, point: {line: string, dot: string, text: string}}}
+     */
     color = {
         axis: {
             line: '#419d30',
@@ -62,7 +84,7 @@ export class Canvas {
      * @param {number[]} dash
      * @return {Canvas}
      */
-    line(xa, ya, xb, yb, color = this.color.axis.line, dash = []) {
+    line(xa, ya, xb, yb, color = Color.axis.base, dash = []) {
         this.ctx.beginPath()
         this.ctx.strokeStyle = color;
         if (this.#polared) {
@@ -109,11 +131,20 @@ export class Canvas {
     }
 
     /**
-     * @param {Point} points
+     * @param {Point[]} points
      * @return {Canvas}
      */
     polygon(points) {
-
+        this.ctx.beginPath()
+        this.ctx.moveTo(this.#cx(points[0].x), this.#cy(points[0].y))
+        for (let i = 1; i < points.length; i++) {
+            this.ctx.lineTo(this.#cx(points[i].x), this.#cy(points[i].y))
+        }
+        this.ctx.closePath()
+        this.ctx.fillStyle = Color.polygon.fill
+        this.ctx.strokeStyle = Color.polygon.stroke
+        this.ctx.fill('evenodd')
+        this.ctx.stroke()
         return this;
     }
 
@@ -127,7 +158,7 @@ export class Canvas {
      * @param {string} color
      * @return {Canvas}
      */
-    text(text, x, y, rad = 0, align = 'center', color = this.color.axis.text) {
+    text(text, x, y, rad = 0, align = 'center', color = Color.axis.text) {
         x *= this.#dpr;
         this.ctx.fillStyle = color;
         this.ctx.textAlign = align
@@ -161,7 +192,7 @@ export class Canvas {
      * @param {string?} color
      * @return {Canvas}
      */
-    arrow(x, y, width, height, rad, color = this.color.axis.line) {
+    arrow(x, y, width, height, rad, color = Color.axis.base) {
         x *= this.#dpr;
         y = (this.height - y) * this.#dpr;
         width *= this.#dpr * .5;
@@ -190,14 +221,14 @@ export class Canvas {
      * @param {number} x
      * @param {number} y
      * @param {number} radius
-     * @param {string?} color
+     * @param {?string} color
      * @return {Canvas}
      */
-    dot(x, y, radius, color) {
+    dot(x, y, radius, color = Color.point.base) {
         x *= this.#dpr
         y = (this.height - y) * this.#dpr;
         this.ctx.beginPath()
-        this.ctx.fillStyle = color ?? this.color.point.dot
+        this.ctx.fillStyle = color
         this.ctx.moveTo(x, y)
         this.ctx.arc(x, y, radius * this.#dpr, 0, 2 * Math.PI);
         this.ctx.fill()
@@ -213,7 +244,7 @@ export class Canvas {
      * @param {string} color
      * @return {Canvas}
      */
-    circle(x, y, radius, color = this.color.axis.line) {
+    circle(x, y, radius, color = Color.axis.base) {
         this.ctx.beginPath()
         this.ctx.strokeStyle = color;
         if (this.#polared) y *= -1
@@ -235,7 +266,7 @@ export class Canvas {
      * @param {number[]} dash
      * @return {Canvas}
      */
-    arc(x, y, radius, startAngle, endAngle, color = this.color.axis.line, dash = []) {
+    arc(x, y, radius, startAngle, endAngle, color = Color.axis.base, dash = []) {
         this.ctx.beginPath()
         this.ctx.strokeStyle = color;
         if (this.#polared) y *= -1
@@ -296,7 +327,7 @@ export class Canvas {
         if (this.mouseCenterX !== null) this.mouseCenterX -= rect.x
         if (this.mouseCenterY !== null) this.mouseCenterY = this.height - (this.mouseCenterY - rect.y)
 
-        this.#draw(this);
+        const repeat = this.#draw(this);
         this.mouseLeftX = null;
         this.mouseLeftY = null;
         this.mouseRightX = null;
@@ -304,7 +335,7 @@ export class Canvas {
         this.mouseCenterX = null;
         this.mouseCenterY = null;
 
-        this.#raf = requestAnimationFrame(this._redraw);
+        if (repeat !== false) this.#raf = requestAnimationFrame(this._redraw);
     }
 
     #visible = false;

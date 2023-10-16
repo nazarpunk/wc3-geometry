@@ -45,6 +45,12 @@ export class Point {
         return this
     }
 
+    round() {
+        this.x = Math.round(this.x)
+        this.y = Math.round(this.y)
+        return this
+    }
+
     /**
      * @param {number} angle
      * @param {number} distance
