@@ -559,7 +559,7 @@ function PolygonCountPoint takes integer index returns integer
 endfunction
 
 const SegmentContainPoint = (a, b, p) => {
-    if ((py - ay) * (bx - ax) - (px - ax) * (by - ay) != 0) return false;
+    if ((py - ay) * (bx - ax) - (px - ax) * (by - ay) != 0) return false
     return Math.min(ax, bx) <= px &&
         px <= Math.max(ax, bx) &&
         Math.min(ay, by) <= py &&
