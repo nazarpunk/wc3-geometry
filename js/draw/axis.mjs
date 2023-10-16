@@ -2,9 +2,9 @@ import {Padding} from "./padding.mjs";
 import {round} from "../math/round.mjs";
 import {AngleNormalize} from "../math/angle-normalize.mjs";
 import {Color} from "./color.mjs";
+import {Point} from "../math/point.mjs";
 
 /** @typedef { import("./canvas.mjs").Canvas } Canvas */
-/** @typedef { import("../math/point.mjs").Point } Point */
 
 export class Axis {
     /** @type {Canvas} */ canvas
@@ -212,9 +212,14 @@ export class Axis {
         return this
     }
 
-
-    polygon(points){
-
+    /**
+     * @param {Point[]} points
+     * @return {Axis}
+     */
+    polygon(points) {
+        if (points.length < 2) return this
+        this.canvas.polygon(points.map(p => new Point(this.#cx(p.x), this.#cy(p.y))))
+        return this
     }
 
     /**

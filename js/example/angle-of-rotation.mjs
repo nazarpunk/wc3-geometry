@@ -33,7 +33,7 @@ Canvas.observe(document.querySelector('.canvas-angle-of-rotation'), c => {
 
     const dst = Math.min(AB.distance, AC.distance);
 
-    const B1 = A.polar(AB.angle + R, AB.distance)
+    const B1 = A.polarClone(AB.angle + R, AB.distance)
 
     axis
         .line(A, B1, {color: Color.line.primary, dash: [5]})

@@ -1,23 +1,23 @@
 import {Canvas} from "../draw/canvas.mjs";
 import {Axis} from "../draw/axis.mjs";
 import {AngleNormalize} from "../math/angle-normalize.mjs";
+import {Point} from "../math/point.mjs";
 
 const axis = new Axis();
 
-/*
-public static double normalize360(double angle) {
-    angle = angle % 360;
-    if (angle < 0) {
-        angle = angle + 360;
-    }
-    return angle;
-}
- */
+const points = [
+    new Point(0, 0),
+    new Point(0, 0),
+    new Point(0, 0),
+    new Point(0, 0),
+    new Point(0, 0),
+]
+
 Canvas.observe(document.querySelector('.canvas-angle-normalize'), c => {
 
     axis.draw(c, {
-        centerX: c.width * .2,
-        centerY: c.height * .2
+        centerX: c.width * .5,
+        centerY: c.height * .5
     })
 
     const ax = axis.maxCountX * .5

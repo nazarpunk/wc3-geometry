@@ -1,9 +1,11 @@
-const map = new Map()
-
 /**
  * @callback CanvasDraw
  * @param {Canvas} canvas
  */
+
+/** @typedef { import("../math/point.mjs").Point } Point */
+
+const map = new Map()
 
 let clientX = 0, clientY = 0;
 
@@ -81,6 +83,7 @@ export class Canvas {
     }
 
     /**
+     * @deprecated
      * @param {number} x
      * @param {number} ya
      * @param {number} yb
@@ -93,6 +96,7 @@ export class Canvas {
     }
 
     /**
+     * @deprecated
      * @param {number} y
      * @param {number} xa
      * @param {number} xb
@@ -102,6 +106,15 @@ export class Canvas {
      */
     lineX(y, xa, xb, color, dash = []) {
         return this.line(xa, y, xb, y, color, dash);
+    }
+
+    /**
+     * @param {Point} points
+     * @return {Canvas}
+     */
+    polygon(points) {
+
+        return this;
     }
 
     /**

@@ -33,7 +33,6 @@ Canvas.observe(document.querySelector('.canvas-point-in-polygon'), c => {
         }
     }
 
-
     for (let i = 0; i < points.length; i++) {
         const p = points[i];
         axis.point(p, {name: `P${i}`})
@@ -42,6 +41,7 @@ Canvas.observe(document.querySelector('.canvas-point-in-polygon'), c => {
     axis
         .point(A, {name: 'A'})
         .line(A, new Point(axis.maxCountX * 2, A.y))
+        .polygon(points)
 
 
 })

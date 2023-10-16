@@ -1,5 +1,11 @@
+import {Segment} from "./segment.mjs";
+
 export class Point {
 
+    /**
+     * @param {number} x
+     * @param {number} y
+     */
     constructor(x, y) {
         this.x = x
         this.y = y
@@ -20,14 +26,54 @@ export class Point {
     }
 
     /**
+     * @param {Point} point
+     * @return {Point}
+     */
+    fromPoint(point) {
+        this.x = point.x
+        this.y = point.y
+        return this
+    }
+
+    /**
+     * @param {Point} point
+     * @return {Point}
+     */
+    subtract(point) {
+        this.x -= point.x
+        this.y -= point.y
+        return this
+    }
+
+    /**
      * @param {number} angle
      * @param {number} distance
      * @return {Point}
      */
     polar(angle, distance) {
+        this.x += Math.cos(angle) * distance
+        this.y += Math.sin(angle) * distance
+        return this
+    }
+
+    /**
+     * @param {number} angle
+     * @param {number} distance
+     * @return {Point}
+     */
+    polarClone(angle, distance) {
         return new Point(
             Math.cos(angle) * distance + this.x,
             Math.sin(angle) * distance + this.y
         )
     }
+
+    /**
+     * @param {Point} point
+     * @return {Segment}
+     */
+    segment(point) {
+        return new Segment(this, point)
+    }
+
 }

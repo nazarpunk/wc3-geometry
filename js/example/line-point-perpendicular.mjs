@@ -34,8 +34,8 @@ Canvas.observe(document.querySelector('.canvas-line-point-perpendicular'), c => 
     const C1 = new Point(cx, cy)
 
     axis
-        .line(A, B.polar(AB.angle + Math.PI, lw))
-        .line(B, A.polar(AB.angle, lw))
+        .line(A, B.polarClone(AB.angle + Math.PI, lw))
+        .line(B, A.polarClone(AB.angle, lw))
         .line(A, B, {color: Color.line.primary})
         .line(C, C1)
         .point(A, {name: 'A'})
