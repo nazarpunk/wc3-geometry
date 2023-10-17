@@ -18,6 +18,7 @@
     <script type="module" src="js/example/line-point-perpendicular.mjs" defer></script>
     <script type="module" src="js/example/line-segment-intersect.mjs" defer></script>
     <script type="module" src="js/example/polygon-contain-point.mjs" defer></script>
+    <script type="module" src="js/example/convex-hull.mjs" defer></script>
 </head>
 <body>
 
@@ -612,6 +613,19 @@ endfunction</pre>
         </p>
 
         <div class="canvas canvas-convex-hull ar-1"></div>
+
+        <p>Для построения воспользуемся алгоритмом
+            <a href="https://dpd.cs.princeton.edu/Papers/BarberDobkinHuhdanpaa.pdf">Quickhull</a>, или, говоря по русски,
+            <a href="https://w.wiki/7pLY">алгоритмом быстрой оболочки</a>.</p>
+
+        <p>Подробнее можете почитать на
+            <a href="http://qhull.org/">официальном сайте</a> алгоритма, нам важно только его сложность:
+            <b>O(N log N)</b>.</p>
+
+        <h3>Вычисление в игре</h3>
+        <p>Так как волшебный JASS не даёт передавать массивы в функцию, то мы заморочимся и напишем свой менеджер точек на массивах:</p>
+        <pre></pre>
+
 
 
     </div>

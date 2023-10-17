@@ -10,8 +10,10 @@ const axis = new Axis()
 const A = new Point(1.5, -2.2)
 const B = new Point(-2.5, 1.5)
 const C = new Point(0, 0)
+const C1 = new Point(0,0)
 const AB = new Segment(A, B)
 const AC = new Segment(A, C)
+
 
 Canvas.observe(document.querySelector('.canvas-line-point-perpendicular'), c => {
 
@@ -31,7 +33,7 @@ Canvas.observe(document.querySelector('.canvas-line-point-perpendicular'), c => 
 
     const [cx, cy] = LinePointPerpendicular(A.x, A.y, B.x, B.y, C.x, C.y)
 
-    const C1 = new Point(cx, cy)
+    C1.move(cx, cy)
 
     axis
         .line(A, B.polarClone(AB.angle + Math.PI, lw))
