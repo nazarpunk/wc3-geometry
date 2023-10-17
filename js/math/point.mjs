@@ -1,4 +1,4 @@
-import {Segment} from "./segment.mjs";
+import {Segment} from './segment.mjs'
 
 export class Point {
 

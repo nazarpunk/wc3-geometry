@@ -1,11 +1,11 @@
-import {Canvas} from "../draw/canvas.mjs";
-import {Axis} from "../draw/axis.mjs";
-import {Segment} from "../math/segment.mjs";
-import {Point} from "../math/point.mjs";
-import {Color} from "../draw/color.mjs";
-import {LinePointPerpendicular} from "../math/line-point-perpendicular.mjs";
+import {Canvas} from '../draw/canvas.mjs'
+import {Axis} from '../draw/axis.mjs'
+import {Segment} from '../math/segment.mjs'
+import {Point} from '../math/point.mjs'
+import {Color} from '../draw/color.mjs'
+import {LinePointPerpendicular} from '../math/line-point-perpendicular.mjs'
 
-const axis = new Axis();
+const axis = new Axis()
 
 const A = new Point(1.5, -2.2)
 const B = new Point(-2.5, 1.5)
@@ -18,7 +18,7 @@ Canvas.observe(document.querySelector('.canvas-line-point-perpendicular'), c => 
     axis.draw(c, {
         centerX: c.width * .5,
         centerY: c.height * .5
-    });
+    })
 
     if (axis.mouseLeftX !== null) A.move(axis.mouseLeftX, axis.mouseLeftY)
     if (axis.mouseRightX !== null) B.move(axis.mouseRightX, axis.mouseRightY)

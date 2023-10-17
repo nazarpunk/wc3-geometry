@@ -1,14 +1,15 @@
-import {Canvas} from "../draw/canvas.mjs";
-import {clamp} from "../math/clamp.mjs";
-import {round} from "../math/round.mjs";
-const pre = document.querySelector('.canvas-distance-pre');
-Canvas.observe(document.querySelector('.canvas-distance'), c => {
-    const px = 55;
-    const py = 40;
-    const ah = 30;
+import {Canvas} from '../draw/canvas.mjs'
+import {clamp} from '../math/clamp.mjs'
+import {round} from '../math/round.mjs'
 
-    const cntW = Math.floor((c.width - px) / ah);
-    const cntH = Math.floor((c.height - py) / ah);
+const pre = document.querySelector('.canvas-distance-pre')
+Canvas.observe(document.querySelector('.canvas-distance'), c => {
+    const px = 55
+    const py = 40
+    const ah = 30
+
+    const cntW = Math.floor((c.width - px) / ah)
+    const cntH = Math.floor((c.height - py) / ah)
 
     for (let i = 1; i < cntW; i++) {
         const x = px + ah * i
@@ -17,16 +18,16 @@ Canvas.observe(document.querySelector('.canvas-distance'), c => {
             .text(i.toString(), x, py - 14)
     }
     for (let i = 1; i < cntH; i++) {
-        const y = py + ah * i;
+        const y = py + ah * i
         c
             .lineX(y, px, px + 10)
             .text(i.toString(), px - 4, y - 4, 0, 'right')
     }
 
-    const xwidth = px + ah * (cntW - 1);
-    const ywidth = py + ah * (cntH - 1);
+    const xwidth = px + ah * (cntW - 1)
+    const ywidth = py + ah * (cntH - 1)
 
-    const ax = Math.floor(cntW * .5) * ah - ah * .5 + px;
+    const ax = Math.floor(cntW * .5) * ah - ah * .5 + px
     const ay = Math.floor(cntH * .5) * ah - ah * .5 + py
     const bx = clamp(c.mouseX, px, xwidth)
     const by = clamp(c.mouseY, py, ywidth)
@@ -65,15 +66,15 @@ Canvas.observe(document.querySelector('.canvas-distance'), c => {
 
     {
 
-        const Ax = round((ax - px) / ah);
-        const Ay = round((ay - py) / ah);
-        const Bx = round((bx - px) / ah);
-        const By = round((by - py) / ah);
-        const AC = round(Ax - Bx);
-        const BC = round(By - Ay);
-        const AC2 = round(AC ** 2);
-        const BC2 = round(BC ** 2);
-        const AB2 = round(AC2 + BC2);
+        const Ax = round((ax - px) / ah)
+        const Ay = round((ay - py) / ah)
+        const Bx = round((bx - px) / ah)
+        const By = round((by - py) / ah)
+        const AC = round(Ax - Bx)
+        const BC = round(By - Ay)
+        const AC2 = round(AC ** 2)
+        const BC2 = round(BC ** 2)
+        const AB2 = round(AC2 + BC2)
 
         pre.querySelector('[data-v=ac]').innerHTML = `${Ax} - ${Bx} = ${AC}`
         pre.querySelector('[data-v=bc]').innerHTML = `${By} - ${Ay} = ${BC}`
@@ -81,4 +82,4 @@ Canvas.observe(document.querySelector('.canvas-distance'), c => {
         pre.querySelector('[data-v=ab]').innerHTML = `<i>SquareRoot</i>(${AB2}) = ${round(Math.sqrt(AB2))}`
     }
 
-});
+})

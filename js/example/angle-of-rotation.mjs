@@ -1,12 +1,12 @@
-import {Canvas} from "../draw/canvas.mjs";
-import {Axis} from "../draw/axis.mjs";
-import {round} from "../math/round.mjs";
-import {AngleOfRotation} from "../math/angle-of-rotation.mjs";
-import {Point} from "../math/point.mjs";
-import {Segment} from "../math/segment.mjs";
-import {Color} from "../draw/color.mjs";
+import {Canvas} from '../draw/canvas.mjs'
+import {Axis} from '../draw/axis.mjs'
+import {round} from '../math/round.mjs'
+import {AngleOfRotation} from '../math/angle-of-rotation.mjs'
+import {Point} from '../math/point.mjs'
+import {Segment} from '../math/segment.mjs'
+import {Color} from '../draw/color.mjs'
 
-const axis = new Axis();
+const axis = new Axis()
 
 const A = new Point(-1.5, -2.2)
 const B = new Point(2.5, 2.5)
@@ -20,7 +20,7 @@ Canvas.observe(document.querySelector('.canvas-angle-of-rotation'), c => {
     axis.draw(c, {
         centerX: c.width * .5,
         centerY: c.height * .5
-    });
+    })
 
     if (axis.mouseLeftX !== null) A.move(axis.mouseLeftX, axis.mouseLeftY)
     if (axis.mouseRightX !== null) B.move(axis.mouseRightX, axis.mouseRightY)
@@ -31,7 +31,7 @@ Canvas.observe(document.querySelector('.canvas-angle-of-rotation'), c => {
 
     const R = AngleOfRotation(AB.angle, AC.angle)
 
-    const dst = Math.min(AB.distance, AC.distance);
+    const dst = Math.min(AB.distance, AC.distance)
 
     const B1 = A.polarClone(AB.angle + R, AB.distance)
 

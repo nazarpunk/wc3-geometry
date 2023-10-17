@@ -1,4 +1,4 @@
-/** @typedef { import("./point.mjs").Point } Point */
+/** @typedef { import('./point.mjs').Point } Point */
 export class Segment {
     /**
      * @param {Point} a

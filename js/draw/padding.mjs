@@ -7,10 +7,10 @@ export class Padding {
      * @param {number} b
      */
     constructor(t, l, r, b) {
-        this.t = t;
-        this.l = l;
-        this.r = r;
-        this.b = b;
+        this.t = t
+        this.l = l
+        this.r = r
+        this.b = b
 
     }
 
@@ -19,19 +19,19 @@ export class Padding {
      * @return {Padding}
      */
     static all(padding) {
-        return new Padding(padding, padding, padding, padding);
+        return new Padding(padding, padding, padding, padding)
     }
 
-    static zero = new Padding(0, 0, 0, 0);
+    static zero = new Padding(0, 0, 0, 0)
 
     /** @return {number} */
     get x() {
-        return this.l + this.r;
-    };
+        return this.l + this.r
+    }
 
     /** @return {number} */
     get y() {
-        return this.t + this.b;
-    };
+        return this.t + this.b
+    }
 
 }

@@ -1,10 +1,10 @@
-import {Canvas} from "../draw/canvas.mjs";
-import {Axis} from "../draw/axis.mjs";
-import {Point} from "../math/point.mjs";
-import {Color} from "../draw/color.mjs";
-import {PolygonContainPoint} from "../math/polygon-contain-point.mjs";
+import {Canvas} from '../draw/canvas.mjs'
+import {Axis} from '../draw/axis.mjs'
+import {Point} from '../math/point.mjs'
+import {Color} from '../draw/color.mjs'
+import {PolygonContainPoint} from '../math/polygon-contain-point.mjs'
 
-const axis = new Axis();
+const axis = new Axis()
 
 const A = new Point(0, 0)
 
@@ -25,7 +25,7 @@ Canvas.observe(document.querySelector('.canvas-polygon-contain-point'), c => {
         centerX: c.width * .5,
         centerY: c.height * .5,
         grid: true
-    });
+    })
 
     if (axis.mouseLeftX !== null) points.push(new Point(axis.mouseLeftX, axis.mouseLeftY).round())
     if (axis.mouseRightX !== null) points.pop()
@@ -36,7 +36,7 @@ Canvas.observe(document.querySelector('.canvas-polygon-contain-point'), c => {
 
     if (points.length > 2) {
         for (let i = 0; i < points.length; i++) {
-            const p = points[i].round();
+            const p = points[i].round()
             axis.point(p, {name: `P${i}`})
         }
     }
@@ -51,7 +51,7 @@ Canvas.observe(document.querySelector('.canvas-polygon-contain-point'), c => {
     }
 
     for (let i = 0; i < points.length; i++) {
-        const p = points[i];
+        const p = points[i]
         axis.point(p, {name: `P${i}`})
     }
 

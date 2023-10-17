@@ -1,10 +1,10 @@
-import {Canvas} from "../draw/canvas.mjs";
-import {Axis} from "../draw/axis.mjs";
-import {Point} from "../math/point.mjs";
-import {Segment} from "../math/segment.mjs";
-import {Color} from "../draw/color.mjs";
+import {Canvas} from '../draw/canvas.mjs'
+import {Axis} from '../draw/axis.mjs'
+import {Point} from '../math/point.mjs'
+import {Segment} from '../math/segment.mjs'
+import {Color} from '../draw/color.mjs'
 
-const axis = new Axis();
+const axis = new Axis()
 
 const A = new Point(2.5, 3.5)
 const A1 = new Point(0, 0)

@@ -6,11 +6,12 @@ const axis = new Axis()
 
 const A = new Point(0, 0)
 
-Canvas.observe(document.querySelector('.canvas-axis'), c => {
+Canvas.observe(document.querySelector('.canvas-convex-hull'), c => {
 
     axis.draw(c, {
         centerX: c.width * .5,
         centerY: c.height * .5
-    }).point(A.move(axis.mouseX, axis.mouseY), {track: true})
+    })
 
+    A.move(axis.mouseX, axis.mouseY)
 })

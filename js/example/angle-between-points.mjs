@@ -1,14 +1,14 @@
-import {Canvas} from "../draw/canvas.mjs";
-import {round} from "../math/round.mjs";
-import {Axis} from "../draw/axis.mjs";
-import {Point} from "../math/point.mjs";
-import {Segment} from "../math/segment.mjs";
-import {Color} from "../draw/color.mjs";
+import {Canvas} from '../draw/canvas.mjs'
+import {round} from '../math/round.mjs'
+import {Axis} from '../draw/axis.mjs'
+import {Point} from '../math/point.mjs'
+import {Segment} from '../math/segment.mjs'
+import {Color} from '../draw/color.mjs'
 
-const preD = document.querySelector('.canvas-angle-between-points-pre-diff');
-const preA = document.querySelector('.canvas-angle-between-points-pre-angle');
+const preD = document.querySelector('.canvas-angle-between-points-pre-diff')
+const preA = document.querySelector('.canvas-angle-between-points-pre-angle')
 
-const axis = new Axis();
+const axis = new Axis()
 
 const A = new Point(2.5, 4.5)
 const B = new Point(0, 0)
@@ -51,4 +51,4 @@ Canvas.observe(document.querySelector('.canvas-angle-between-points'), c => {
     preD.querySelector('[data-v=by]').innerHTML = `${round(B.y).toFixed(2)} - ${round(A.y).toFixed(2)} = ${round(B.y - A.y).toFixed(2)}`
     preA.querySelector('[data-v=a]').innerHTML = `<i>Atan2</i>(${round(B.y).toFixed(2)}, ${round(B.x).toFixed(2)}) = ${round(OB1.angle).toFixed(2)}`
 
-});
+})
