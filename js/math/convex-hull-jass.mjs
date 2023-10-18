@@ -8,51 +8,39 @@ const ConvexHullX = []
 const ConvexHullY = []
 let ConvexHullCursor = -1
 
-const points = [
-    {x: 4, y: 4},
-    {x: -3, y: 3},
-    {x: 3, y: 4},
-    {x: 5, y: 6},
-    {x: 7, y: 8},
-    {x: 3, y: -4},
-    {x: -3, y: -3},
-]
-
-
-function swap(i, j) {
-    const temp = points[i]
-    points[i] = points[j]
-    points[j] = temp
+function ConvexHullInputQuickSortSwap(i, j) {
+    const temp = ConvexHullInputIndex[i]
+    ConvexHullInputIndex[i] = ConvexHullInputIndex[j]
+    ConvexHullInputIndex[j] = temp
 }
 
 function partition(low, high) {
-    const pivot = points[high]
+    const pivot = ConvexHullInputIndex[high]
     let i = low - 1
 
     for (let j = low; j < high; j++) {
-        if (points[j].x < pivot.x || points[j].x === pivot.x && points[j].y < pivot.y) {
+        const jx = ConvexHullInputX[ConvexHullInputIndex[j]]
+        const jy = ConvexHullInputY[ConvexHullInputIndex[j]]
+        const px = ConvexHullInputX[pivot]
+        const py = ConvexHullInputY[pivot]
+        if (jx < px || jx === px && jy < py) {
             i++
-            swap(i, j)
+            ConvexHullInputQuickSortSwap(i, j)
         }
     }
 
-    swap(i + 1, high)
+    ConvexHullInputQuickSortSwap(i + 1, high)
     return i + 1
 }
 
-const quickSortHelper = (low, high) => {
+const ConvexHullInputQuickSort = (low, high) => {
     if (low >= high) {
         return
     }
     const pivotIndex = partition(low, high)
-    quickSortHelper(low, pivotIndex - 1)
-    quickSortHelper(pivotIndex + 1, high)
+    ConvexHullInputQuickSort(low, pivotIndex - 1)
+    ConvexHullInputQuickSort(pivotIndex + 1, high)
 }
-
-quickSortHelper(0, points.length - 1)
-
-
-console.log(3, points)
 
 const ConvexHullInputAdd = (x, y) => {
     ConvexHullInputCursor = ConvexHullInputCursor + 1
@@ -61,42 +49,6 @@ const ConvexHullInputAdd = (x, y) => {
     ConvexHullInputY[ConvexHullInputCursor] = y
 }
 
-const ConvexHullInputQuickSortCompare = (a, b) => {
-    let ax = ConvexHullInputX[ConvexHullInputIndex[a]]
-    let ay = ConvexHullInputY[ConvexHullInputIndex[a]]
-    let bx = ConvexHullInputX[ConvexHullInputIndex[b]]
-    let by = ConvexHullInputY[ConvexHullInputIndex[b]]
-    if (ax === bx) {
-        return ay < by
-    } else {
-        return ax < bx
-    }
-}
-
-const ConvexHullInputQuickSort = (left, right) => {
-    if (right - left < 2) {
-        return
-    }
-
-    const pivotValue = ConvexHullInputIndex[right]
-    let split = left
-    for (let i = left; i < right; i++) {
-        if (!ConvexHullInputQuickSortCompare(i, pivotValue)) {
-            if (split !== i) {
-                const temp = ConvexHullInputIndex[split]
-                ConvexHullInputIndex[split] = ConvexHullInputIndex[i]
-                ConvexHullInputIndex[i] = temp
-            }
-            split++
-        }
-    }
-
-    ConvexHullInputIndex[right] = ConvexHullInputIndex[split]
-    ConvexHullInputIndex[split] = pivotValue
-
-    ConvexHullInputQuickSort(left, split - 1)
-    ConvexHullInputQuickSort(split + 1, right)
-}
 const ConvexHullRemoveMiddle = (ax, ay, bx, by, cx, cy) => {
     let abx = ax - bx
     let aby = ay - by
@@ -117,8 +69,7 @@ const removeMiddle = (a, b, c) => {
 
 
 export const ConvexHull = points => {
-    points.sort((a, b) => a.x === b.x ? a.y - b.y : a.x - b.x)
-    console.log(2, [...points])
+    //points.sort((a, b) => a.x === b.x ? a.y - b.y : a.x - b.x)
     ConvexHullCursor = -1
     const n = points.length
     const hull = []
@@ -155,14 +106,13 @@ export const ConvexHullJass = points => {
 
     ConvexHullInputCursor = -1
     for (const point of points) ConvexHullInputAdd(point.x, point.y)
+
     ConvexHullInputQuickSort(0, ConvexHullInputCursor)
 
     const p = []
     for (let i = 0; i <= ConvexHullInputCursor; i++) {
         p.push(new Point(ConvexHullInputX[ConvexHullInputIndex[i]], ConvexHullInputY[ConvexHullInputIndex[i]]))
     }
-
-    //console.log(1, [...p])
 
     return ConvexHull(p)
 
