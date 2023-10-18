@@ -8,43 +8,6 @@ const ConvexHullX = []
 const ConvexHullY = []
 let ConvexHullCursor = -1
 
-
-function quicksort(points) {
-    function swap(arr, i, j) {
-        const temp = arr[i]
-        arr[i] = arr[j]
-        arr[j] = temp
-    }
-
-    function partition(arr, low, high) {
-        const pivot = arr[high]
-        let i = low - 1
-
-        for (let j = low; j < high; j++) {
-            if (arr[j].x < pivot.x || arr[j].x === pivot.x && arr[j].y < pivot.y) {
-                i++
-                swap(arr, i, j)
-            }
-        }
-
-        swap(arr, i + 1, high)
-        return i + 1
-    }
-
-    // Основная функция сортировки
-    function quickSortHelper(arr, low, high) {
-        if (low < high) {
-            const pivotIndex = partition(arr, low, high)
-            quickSortHelper(arr, low, pivotIndex - 1)
-            quickSortHelper(arr, pivotIndex + 1, high)
-        }
-    }
-
-    // Начинаем сортировку
-    quickSortHelper(points, 0, points.length - 1)
-}
-
-// Пример использования:
 const points = [
     {x: 4, y: 4},
     {x: -3, y: 3},
@@ -55,7 +18,39 @@ const points = [
     {x: -3, y: -3},
 ]
 
-quicksort(points)
+
+function swap(i, j) {
+    const temp = points[i]
+    points[i] = points[j]
+    points[j] = temp
+}
+
+function partition(low, high) {
+    const pivot = points[high]
+    let i = low - 1
+
+    for (let j = low; j < high; j++) {
+        if (points[j].x < pivot.x || points[j].x === pivot.x && points[j].y < pivot.y) {
+            i++
+            swap(i, j)
+        }
+    }
+
+    swap(i + 1, high)
+    return i + 1
+}
+
+const quickSortHelper = (low, high) => {
+    if (low >= high) {
+        return
+    }
+    const pivotIndex = partition(low, high)
+    quickSortHelper(low, pivotIndex - 1)
+    quickSortHelper(pivotIndex + 1, high)
+}
+
+quickSortHelper(0, points.length - 1)
+
 
 console.log(3, points)
 
@@ -167,7 +162,7 @@ export const ConvexHullJass = points => {
         p.push(new Point(ConvexHullInputX[ConvexHullInputIndex[i]], ConvexHullInputY[ConvexHullInputIndex[i]]))
     }
 
-    console.log(1, [...p])
+    //console.log(1, [...p])
 
     return ConvexHull(p)
 
