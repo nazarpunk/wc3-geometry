@@ -8,48 +8,58 @@ const ConvexHullX = []
 const ConvexHullY = []
 let ConvexHullCursor = -1
 
-function ConvexHullInputQuickSortSwap(i, j) {
-    const temp = ConvexHullInputIndex[i]
-    ConvexHullInputIndex[i] = ConvexHullInputIndex[j]
-    ConvexHullInputIndex[j] = temp
-}
-
-function partition(low, high) {
-    const pivot = ConvexHullInputIndex[high]
-    let i = low - 1
-
-    for (let j = low; j < high; j++) {
-        const jx = ConvexHullInputX[ConvexHullInputIndex[j]]
-        const jy = ConvexHullInputY[ConvexHullInputIndex[j]]
-        const px = ConvexHullInputX[pivot]
-        const py = ConvexHullInputY[pivot]
-        if (jx < px || jx === px && jy < py) {
-            i++
-            ConvexHullInputQuickSortSwap(i, j)
-        }
-    }
-
-    ConvexHullInputQuickSortSwap(i + 1, high)
-    return i + 1
-}
-
-const ConvexHullInputQuickSort = (low, high) => {
-    if (low >= high) {
-        return
-    }
-    const pivotIndex = partition(low, high)
-    ConvexHullInputQuickSort(low, pivotIndex - 1)
-    ConvexHullInputQuickSort(pivotIndex + 1, high)
-}
-
-const ConvexHullInputAdd = (x, y) => {
+function ConvexHullInputAdd(x, y) {
     ConvexHullInputCursor = ConvexHullInputCursor + 1
     ConvexHullInputIndex[ConvexHullInputCursor] = ConvexHullInputCursor
     ConvexHullInputX[ConvexHullInputCursor] = x
     ConvexHullInputY[ConvexHullInputCursor] = y
 }
 
-const ConvexHullRemoveMiddle = (ax, ay, bx, by, cx, cy) => {
+function ConvexHullInputSortSwap(i, j) {
+    const temp = ConvexHullInputIndex[i]
+    ConvexHullInputIndex[i] = ConvexHullInputIndex[j]
+    ConvexHullInputIndex[j] = temp
+}
+
+function ConvexHullInputSort(low, high) {
+    let i = low - 1
+    let j = low
+    let ji
+    let jx
+    let jy
+    let pi
+    let px
+    let py
+
+    if (low >= high) {
+        return
+    }
+
+    while (true) {
+        if (j >= high) break
+        ji = ConvexHullInputIndex[j]
+        jx = ConvexHullInputX[ji]
+        jy = ConvexHullInputY[ji]
+        pi = ConvexHullInputIndex[high]
+        px = ConvexHullInputX[pi]
+        py = ConvexHullInputY[pi]
+        if (jx < px || jx === px && jy < py) {
+            i = i + 1
+            ConvexHullInputSortSwap(i, j)
+        }
+        j = j + 1
+    }
+    ConvexHullInputSortSwap(i + 1, high)
+
+    ConvexHullInputSort(low, i)
+    ConvexHullInputSort(i + 2, high)
+}
+
+function ConvexHullRemoveMiddle(cx, cy) {
+    let ax = ConvexHullX[ConvexHullCursor - 1]
+    let ay = ConvexHullY[ConvexHullCursor - 1]
+    let bx = ConvexHullX[ConvexHullCursor]
+    let by = ConvexHullY[ConvexHullCursor]
     let abx = ax - bx
     let aby = ay - by
     let cbx = cx - bx
@@ -58,44 +68,40 @@ const ConvexHullRemoveMiddle = (ax, ay, bx, by, cx, cy) => {
     return cross < 0 || cross === 0 && abx * cbx + aby * cby <= 0
 }
 
-const removeMiddle = (a, b, c) => {
-    const abx = a.x - b.x
-    const aby = a.y - b.y
-    const cbx = c.x - b.x
-    const cby = c.y - b.y
-    const cross = abx * cby - aby * cbx
-    return cross < 0 || cross === 0 && abx * cbx + aby * cby <= 0
-}
+function ConvexHull() {
+    const n = ConvexHullInputCursor + 1
+    let i = 0
+    let j
+    let ji
+    let jx
+    let jy
 
-
-export const ConvexHull = points => {
-    //points.sort((a, b) => a.x === b.x ? a.y - b.y : a.x - b.x)
+    ConvexHullInputSort(0, ConvexHullInputCursor)
     ConvexHullCursor = -1
-    const n = points.length
-    const hull = []
 
-    for (let i = 0; i < 2 * n; i++) {
-        const j = points[i < n ? i : 2 * n - 1 - i]
-        while (true) {
-            if (hull.length < 2) break
-            if (1) {
-                if (!removeMiddle(hull[hull.length - 2], hull[hull.length - 1], j)) break
-            } else {
-                const ax = hull[hull.length - 2].x
-                const ay = hull[hull.length - 2].y
-                const bx = hull[hull.length - 1].x
-                const by = hull[hull.length - 1].y
-                const cx = j.x
-                const cy = j.y
-                if (!ConvexHullRemoveMiddle(ax, ay, bx, by, cx, cy)) break
-            }
-            hull.pop()
+    while (true) {
+        if (i >= 2 * n) break
+
+        if (i < n) {
+            j = i
+        } else {
+            j = 2 * n - 1 - i
         }
-        hull.push(j)
-    }
 
-    hull.pop()
-    return hull
+        ji = ConvexHullInputIndex[j]
+        jx = ConvexHullInputX[ji]
+        jy = ConvexHullInputY[ji]
+        while (true) {
+            if (ConvexHullCursor < 1 || !ConvexHullRemoveMiddle(jx, jy)) break
+            ConvexHullCursor = ConvexHullCursor - 1
+        }
+
+        ConvexHullCursor = ConvexHullCursor + 1
+        ConvexHullX[ConvexHullCursor] = jx
+        ConvexHullY[ConvexHullCursor] = jy
+        i = i + 1
+    }
+    ConvexHullCursor = ConvexHullCursor - 1
 }
 
 /**
@@ -103,18 +109,10 @@ export const ConvexHull = points => {
  * @return {Point[]}
  */
 export const ConvexHullJass = points => {
-
     ConvexHullInputCursor = -1
     for (const point of points) ConvexHullInputAdd(point.x, point.y)
 
-    ConvexHullInputQuickSort(0, ConvexHullInputCursor)
-
-    const p = []
-    for (let i = 0; i <= ConvexHullInputCursor; i++) {
-        p.push(new Point(ConvexHullInputX[ConvexHullInputIndex[i]], ConvexHullInputY[ConvexHullInputIndex[i]]))
-    }
-
-    return ConvexHull(p)
+    ConvexHull()
 
     const out = []
     for (let i = 0; i <= ConvexHullCursor; i++) {

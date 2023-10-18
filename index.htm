@@ -612,6 +612,10 @@ endfunction</pre>
             Представьте себе доску, в которую вбито — но не по самую шляпку — много гвоздей. Возьмите верёвку, свяжите на ней скользящую петлю (лассо) и набросьте её на доску, а потом затяните. Верёвка окружает все гвозди, но касается она только некоторых, самых внешних. В таком положении петля и окружённая ей область доски являются выпуклой оболочкой для всей группы гвоздей.
         </p>
 
+        <div class="canvas-text">
+            <div>ЛКМ - Добавить точку</div>
+            <div>ПКМ - Удалить точку</div>
+        </div>
         <div class="canvas canvas-convex-hull ar-1"></div>
 
         <p>Для построения воспользуемся алгоритмом
@@ -624,7 +628,112 @@ endfunction</pre>
 
         <h3>Вычисление в игре</h3>
         <p>Так как волшебный JASS не даёт передавать массивы в функцию, то мы заморочимся и напишем свой менеджер точек на массивах:</p>
-        <pre>Код пишется...</pre>
+        <pre>globals
+    real array ConvexHullInputX
+    real array ConvexHullInputY
+    integer array ConvexHullInputIndex
+    integer ConvexHullInputCursor = -1
+    real array ConvexHullX
+    real array ConvexHullY
+    integer ConvexHullCursor = -1
+endglobals
+
+function ConvexHullInputAdd takes real x, real y returns nothing
+    set ConvexHullInputCursor = ConvexHullInputCursor + 1
+    set ConvexHullInputIndex[ConvexHullInputCursor] = ConvexHullInputCursor
+    set ConvexHullInputX[ConvexHullInputCursor] = x
+    set ConvexHullInputY[ConvexHullInputCursor] = y
+endfunction
+
+function ConvexHullInputSortSwap takes integer i, integer j returns nothing
+    local integer temp = ConvexHullInputIndex[i]
+    set ConvexHullInputIndex[i] = ConvexHullInputIndex[j]
+    set ConvexHullInputIndex[j] = temp
+endfunction
+
+function ConvexHullInputSort takes integer low, integer high returns nothing
+    local integer i = low - 1
+    local integer j = low
+    local integer ji
+    local real jx
+    local real jy
+    local integer pi
+    local real px
+    local real py
+
+    if low >= high then
+        return
+    endif
+
+    loop
+        exitwhen j >= high
+        set ji = ConvexHullInputIndex[j]
+        set jx = ConvexHullInputX[ji]
+        set jy = ConvexHullInputY[ji]
+        set pi = ConvexHullInputIndex[high]
+        set px = ConvexHullInputX[pi]
+        set py = ConvexHullInputY[pi]
+        if jx < px or jx == px and jy < py then
+            set i = i + 1
+            call ConvexHullInputSortSwap(i, j)
+        endif
+        set j = j + 1
+    endloop
+    call ConvexHullInputSortSwap(i + 1, high)
+
+    call ConvexHullInputSort(low, i)
+    call ConvexHullInputSort(i + 2, high)
+endfunction
+
+function ConvexHullRemoveMiddle takes real cx, real cy returns boolean
+    local real ax = ConvexHullX[ConvexHullCursor - 1]
+    local real ay = ConvexHullY[ConvexHullCursor - 1]
+    local real bx = ConvexHullX[ConvexHullCursor]
+    local real by = ConvexHullY[ConvexHullCursor]
+    local real abx = ax - bx
+    local real aby = ay - by
+    local real cbx = cx - bx
+    local real cby = cy - by
+    local real cross = abx * cby - aby * cbx
+    return cross < 0 or cross == 0 and abx * cbx + aby * cby <= 0
+endfunction
+
+function ConvexHull takes nothing returns nothing
+    local real n = ConvexHullInputCursor + 1
+    local integer i = 0
+    local integer j
+    local integer ji
+    local real jx
+    local real jy
+
+    call ConvexHullInputSort(0, ConvexHullInputCursor)
+    set ConvexHullCursor = -1
+
+    loop
+        exitwhen i >= 2 * n
+
+        if i < n then
+            set j = i
+        else
+            set j = 2 * n - 1 - i
+        endif
+
+        set ji = ConvexHullInputIndex[j]
+        set jx = ConvexHullInputX[ji]
+        set jy = ConvexHullInputY[ji]
+        loop
+            exitwhen ConvexHullCursor < 1 or  not ConvexHullRemoveMiddle(jx, jy)
+            set ConvexHullCursor = ConvexHullCursor - 1
+        endloop
+
+        set ConvexHullCursor = ConvexHullCursor + 1
+        set ConvexHullX[ConvexHullCursor] = jx
+        set ConvexHullY[ConvexHullCursor] = jy
+        set i = i + 1
+    endloop
+
+    set ConvexHullCursor = ConvexHullCursor - 1
+endfunction</pre>
 
 
 

@@ -53,5 +53,4 @@ Canvas.observe(document.querySelector('.canvas-convex-hull'), c => {
         axis.point(points[i])
     }
 
-    //return false
 })
