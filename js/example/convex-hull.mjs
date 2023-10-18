@@ -2,6 +2,7 @@ import {Canvas} from '../draw/canvas.mjs'
 import {Axis} from '../draw/axis.mjs'
 import {Point} from '../math/point.mjs'
 import {ConvexHull} from '../math/convex-hull.mjs'
+import {ConvexHullJass} from '../math/convex-hull-jass.mjs'
 
 const axis = new Axis()
 
@@ -9,7 +10,8 @@ const A = new Point(0, 0)
 
 /** @type {Point[]} */
 const points = [
-    A,
+    //A,
+    new Point(5, 4),
     new Point(-3, 3),
     new Point(3, 4),
     new Point(5, 6),
@@ -32,7 +34,12 @@ Canvas.observe(document.querySelector('.canvas-convex-hull'), c => {
     A.move(axis.mouseX, axis.mouseY)
 
     if (points.length > 2) {
-        const hull = ConvexHull([...points])
+        let hull
+        if (1) {
+            hull = ConvexHullJass([...points])
+        } else {
+            hull = ConvexHull([...points])
+        }
 
         for (let i = 0, j = hull.length - 1; i < hull.length; j = i++) {
             const a = hull[i]
@@ -45,4 +52,6 @@ Canvas.observe(document.querySelector('.canvas-convex-hull'), c => {
     for (let i = 0; i < points.length; i++) {
         axis.point(points[i])
     }
+
+    return false
 })
