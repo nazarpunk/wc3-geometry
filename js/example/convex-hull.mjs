@@ -9,13 +9,13 @@ const A = new Point(0, 0)
 
 /** @type {Point[]} */
 const points = [
-    //A,
-    new Point(1, 2),
+    A,
+    new Point(-3, 3),
     new Point(3, 4),
     new Point(5, 6),
     new Point(7, 8),
-    new Point(9, 10),
-    new Point(11, 12),
+    new Point(3, -4),
+    new Point(-3, -3),
 ]
 
 Canvas.observe(document.querySelector('.canvas-convex-hull'), c => {
@@ -45,6 +45,4 @@ Canvas.observe(document.querySelector('.canvas-convex-hull'), c => {
     for (let i = 0; i < points.length; i++) {
         axis.point(points[i])
     }
-
-    return false
 })

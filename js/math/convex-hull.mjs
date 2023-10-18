@@ -1,16 +1,15 @@
 /** @typedef { import('./point.mjs').Point } Point */
 import {Point} from './point.mjs'
 
-const ConvexHullList = [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+const ConvexHullX = [11, 9, 7, 5, 3, 1]
+const ConvexHullY = [12, 10, 8, 6, 4, 2]
 
 // points.sort((a, b) => b.x === a.x ? a.y - b.y : a.x - b.x)
 function ConvexHullQuickSortCompare(a, b) {
-    const ai = a * 2
-    const bi = b * 2
-    const ax = ConvexHullList[ai]
-    const ay = ConvexHullList[ai + 1]
-    const bx = ConvexHullList[bi]
-    const by = ConvexHullList[bi + 1]
+    const ax = ConvexHullX[a]
+    const ay = ConvexHullY[a]
+    const bx = ConvexHullX[b]
+    const by = ConvexHullY[b]
 
     if (ax === bx) {
         return ay - by
@@ -18,7 +17,6 @@ function ConvexHullQuickSortCompare(a, b) {
         return ax - bx
     }
 }
-
 
 const defaultSortingAlgorithm = (a, b) => {
     if (a < b) {
@@ -30,38 +28,40 @@ const defaultSortingAlgorithm = (a, b) => {
     return 0
 }
 
-const sortedArray = [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+const ConvexHullIndex = [0, 1, 2, 3, 4, 5]
 const ConvexHullQuickSort = (start, end) => {
     if (end - start < 2) {
         return
     }
 
-    const pivotValue = sortedArray[end]
+    const pivotValue = ConvexHullIndex[end]
     let splitIndex = start
     for (let i = start; i < end; i++) {
-        const sort = defaultSortingAlgorithm(sortedArray[i], pivotValue)
+        const sort = defaultSortingAlgorithm(ConvexHullIndex[i], pivotValue)
 
         if (sort < 0) {
             if (splitIndex !== i) {
-                const temp = sortedArray[splitIndex]
-                sortedArray[splitIndex] = sortedArray[i]
-                sortedArray[i] = temp
+                const temp = ConvexHullIndex[splitIndex]
+                ConvexHullIndex[splitIndex] = ConvexHullIndex[i]
+                ConvexHullIndex[i] = temp
             }
             splitIndex++
         }
 
     }
 
-    sortedArray[end] = sortedArray[splitIndex]
-    sortedArray[splitIndex] = pivotValue
+    ConvexHullIndex[end] = ConvexHullIndex[splitIndex]
+    ConvexHullIndex[splitIndex] = pivotValue
 
     ConvexHullQuickSort(start, splitIndex - 1)
     ConvexHullQuickSort(splitIndex + 1, end)
 }
 
-ConvexHullQuickSort(0, sortedArray.length - 1)
+ConvexHullQuickSort(0, ConvexHullIndex.length - 1)
 
-console.log(sortedArray)
+console.log(ConvexHullIndex)
+//for (let i)
+
 
 /**
  * @param {Point} a
