@@ -74,16 +74,7 @@ export class Grid {
         const y = cy + point.y * step
 
         const ctx = this.#ctx
-
-        ctx.beginPath()
-        ctx.fillStyle = Color.point.fill
-        ctx.strokeStyle = Color.point.stroke
-
         const r = 6 * dpr
-        ctx.arc(x, y, r, 0, Math.PI * 2)
-        ctx.fill()
-        ctx.stroke()
-        ctx.closePath()
 
         if (track) {
             ctx.beginPath()
@@ -169,6 +160,15 @@ export class Grid {
             text(point.x, x, xy, true)
             ctx.restore()
         }
+
+        ctx.beginPath()
+        ctx.fillStyle = Color.point.fill
+        ctx.strokeStyle = Color.point.stroke
+
+        ctx.arc(x, y, r, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.stroke()
+        ctx.closePath()
 
         return this
     }

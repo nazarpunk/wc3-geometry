@@ -4,19 +4,19 @@ export const Color = {
         stroke: '#efac10',
         name: '#519bf8',
         track: {
-            fill : '#484242',
+            fill : '#4d4444',
             text: '#bd8a0e'
         }
     },
     line: {
-        base: '#726c6c',
+        base: '#5c5d60',
         primary: '#efaf1b',
     },
     axis: {
         base: '#419d30',
         step: '#11e81a',
         text: '#da0a3d',
-        grid: '#2f2f2f',
+        grid: '#282727',
     },
     polygon: {
         fill: 'rgba(0,253,221,0.18)',
