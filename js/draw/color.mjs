@@ -1,7 +1,12 @@
 export const Color = {
     point: {
-        base: '#efac10',
-        name: '#519bf8'
+        fill: 'rgba(239,172,16,0.36)',
+        stroke: '#efac10',
+        name: '#519bf8',
+        track: {
+            fill : '#484242',
+            text: '#bd8a0e'
+        }
     },
     line: {
         base: '#726c6c',

@@ -224,7 +224,7 @@ export class Canvas {
      * @param {?string} color
      * @return {Canvas}
      */
-    dot(x, y, radius, color = Color.point.base) {
+    dot(x, y, radius, color = Color.point.fill) {
         x *= this.#dpr
         y = (this.height - y) * this.#dpr
         this.ctx.beginPath()

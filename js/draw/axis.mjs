@@ -145,7 +145,7 @@ export class Axis {
         name,
         track = false,
         dash = [],
-        color = Color.point.base,
+        color = Color.point.fill,
 
     } = {}) {
         const px = this.#cx(point.x)

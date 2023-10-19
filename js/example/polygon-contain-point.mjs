@@ -56,7 +56,7 @@ Canvas.observe(document.querySelector('.canvas-polygon-contain-point'), c => {
     }
 
     const inside = PolygonContainPoint(points, A)
-    axis.point(A, {name: ['A', inside ? 'внутри' : 'снаружи'], color: inside ? Color.point.base : Color.line.base})
+    axis.point(A, {name: ['A', inside ? 'внутри' : 'снаружи'], color: inside ? Color.point.fill : Color.line.base})
 
 
 })

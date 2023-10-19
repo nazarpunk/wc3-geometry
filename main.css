@@ -35,6 +35,11 @@ p {
     padding: 0 1rem;
 }
 
+.annotate {
+    background-color: #1b1b1b;
+    color: #6d6d6d;
+}
+
 h3 {
     padding: 0 1rem;
 }
@@ -74,6 +79,7 @@ h3 {
 }
 
 .canvas-text {
+    font-family: JetBrainsMono, monospace;
     height: 0;
     pointer-events: none;
     color: #848484;

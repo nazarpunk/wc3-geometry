@@ -36,8 +36,8 @@ Canvas.observe(document.querySelector('.canvas-angle-between-points'), c => {
     axis
         .line(A, B, {color: Color.line.primary,})
         .line(A, B2, {color: Color.axis.base, dash: [5]})
-        .line(O, B1, {color: Color.point.base, dash: [5]})
-        .arc(O, AB.distance, 0, OB1.angle, {color: Color.point.base, dash: [5], short: true})
+        .line(O, B1, {color: Color.point.fill, dash: [5]})
+        .arc(O, AB.distance, 0, OB1.angle, {color: Color.point.fill, dash: [5], short: true})
         .point(A, {name: 'A', track: true})
         .point(O, {name: 'A1'})
         .point(B, {
