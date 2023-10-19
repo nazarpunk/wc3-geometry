@@ -4,7 +4,7 @@
 }
 
 body {
-    font-family: Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: Roboto, Verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 1rem;
     line-height: 1.6rem;
     padding: 1rem;
@@ -16,9 +16,8 @@ body {
 
 .container {
     background-color: #242526;
-    padding: 1rem;
     margin: 0 auto;
-    max-width: 50rem;
+    max-width: 800px;
     border-radius: 1rem;
 }
 
@@ -32,6 +31,15 @@ a {
     text-decoration: none;
 }
 
+p {
+    padding: 0 1rem;
+}
+
+h3 {
+    padding: 0 1rem;
+}
+
+
 .header {
     text-align: center;
 }
@@ -42,7 +50,7 @@ a {
     position: sticky;
     top: 0;
     z-index: 20;
-    margin: 0 calc((var(--s) + 26px) * -1);
+    margin: 0 calc((var(--s) + var(--d)) * -1);
 
     --py: 10px;
     --s: 10px;
@@ -57,14 +65,11 @@ a {
             #0004 62.5%, #0008 0 75%, #0000 0) 100%/50% no-repeat;
     clip-path: polygon(0 var(--d), var(--s) var(--d), var(--s) 0, calc(100% - var(--s)) 0, calc(100% - var(--s)) var(--d), 100% var(--d), calc(100% - var(--c)) calc(50% + var(--d) / 2), 100% 100%, calc(100% - var(--s) - var(--d)) 100%, calc(100% - var(--s) - var(--d)) calc(100% - var(--d)), calc(var(--s) + var(--d)) calc(100% - var(--d)), calc(var(--s) + var(--d)) 100%, 0 100%, var(--c) calc(50% + var(--d) / 2));
     /*noinspection CssReplaceWithShorthandSafely*/
-    background-color: #470d12; /* the main color */
-    /* width: fit-content; you may need to use this in your code if the element is full width */
+    background-color: #470d12;
 }
 
 .canvas, .canvas-text {
     position: relative;
-    margin-left: -1rem;
-    margin-right: -1rem;
     user-select: none;
 }
 
@@ -103,11 +108,27 @@ a {
 }
 
 pre {
+    font-family: JetBrainsMono, monospace;
     font-size: 14px;
-    line-height: 16px;
+    line-height: 24px;
     padding: .5rem 1rem;
-    margin-left: -1rem;
-    margin-right: -1rem;
     background: black;
     overflow-x: auto;
+}
+
+@media (max-width: 840px) {
+    body {
+        padding: 0;
+    }
+
+    .container {
+        max-width: 100%;
+    }
+
+    .header-ribbon {
+        --d: 0px;
+        --s: 0px;
+        margin: 0;
+        clip-path: none;
+    }
 }

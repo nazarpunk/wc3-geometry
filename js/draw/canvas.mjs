@@ -316,7 +316,7 @@ export class Canvas {
 
         this.ctx.lineJoin = 'miter'
         this.ctx.lineWidth = this.#dpr
-        this.ctx.font = `${12 * this.#dpr}px Arial`
+        this.ctx.font = `${12 * this.#dpr}px JetBrainsMono`
 
         this.mouseX = clientX - rect.x
         this.mouseY = this.height - (clientY - rect.y)
