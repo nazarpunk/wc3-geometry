@@ -30,9 +30,6 @@ Canvas.observe(document.querySelector('.canvas-angle-between-points'), c => {
     B1.move(B.x - A.x, B.y - A.y)
     B2.move(A.x + AB.distance, A.y)
 
-    AB.move(A, B)
-    OB1.move(O, B1)
-
     axis
         .line(A, B, {color: Color.line.primary,})
         .line(A, B2, {color: Color.axis.base, dash: [5]})

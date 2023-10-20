@@ -24,10 +24,8 @@ Canvas.observe(document.querySelector('.canvas-polar-offset'), c => {
 
     if (axis.mouseLeftX !== null) A.move(axis.mouseLeftX, axis.mouseLeftY)
     B.move(axis.mouseX, axis.mouseY)
-    AB.update()
 
     B1.fromPoint(B).subtract(A)
-    A1B1.update()
 
     B2.fromPoint(B).polar(AB.angle, AB.distance)
 

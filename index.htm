@@ -12,7 +12,7 @@
     <script type="module" src="js/main.mjs" defer></script>
     <script type="module" src="js/example/axis.mjs" defer></script>
     <script type="module" src="js/example/angle.mjs" defer></script>
-    <script type="module" src="js/example/distance-line.mjs" defer></script>
+    <script type="module" src="js/example/distance-axis.mjs" defer></script>
     <script type="module" src="js/example/distance.mjs" defer></script>
     <script type="module" src="js/example/angle-between-points.mjs" defer></script>
     <script type="module" src="js/example/polar-offset.mjs" defer></script>
@@ -46,7 +46,7 @@
         </p>
 
         <div class="canvas-text">
-            <div>Перемещайте точку зажав <b>ЛКМ</b></div>
+            <div>Перемещайте точки зажав <b>ЛКМ</b></div>
         </div>
         <div class="canvas canvas-axis ar-1"></div>
 
@@ -68,11 +68,18 @@
             Но мы не будем сходу окунаться в двумерное пространство, а ограничимся одним измерением, тобишь точками на координатной прямой.
         </p>
         <p>
-            Для того, чтобы вычислить расстояние между двумя точками на координатной прямой, необходимо просто взять
-            <a href="https://w.wiki/7Z79">абсолютную величину</a> разности двух ккординат. Или по простому, отнять от одной координаты другую и выбросить минус, если он есть. Притом абсолютно не важно, какую координату из какой вычитать. Убедиться в этом вы можете на интерактивной демонстрации.
+            Для того, чтобы вычислить расстояние между двумя точками на координатной прямой необходимо вычислить
+            <a href="https://w.wiki/7Z79">абсолютную величину</a> разности двух ккординат.
         </p>
 
-        <div class="canvas canvas-distance-line"></div>
+        <p>Говоря проще, необходимо отнять от одной координаты другую и выбросить минус, если он есть. Притом абсолютно не важно, какую координату из какой вычитать. Убедиться в этом вы можете на интерактивной демонстрации.</p>
+
+        <div class="canvas-text no-ligatures">
+            <div>Перемещайте точки зажав <b>ЛКМ</b></div>
+            <br>
+            <div class="canvas-distance-axis-text"></div>
+        </div>
+        <div class="canvas canvas-distance-axis ar-2"></div>
 
         <p>Как вы могли заметить, формула прекрасно работает вне зависимости от направления оси. Теперь можно воспользоваться
             <a href="https://w.wiki/7axe">теоремой Пифагора</a> и найти расстояние между точками на плоскости.
@@ -81,17 +88,16 @@
         <p>
             Если вы не понимаете, при чём здесь треугольники, то эта интерактивная демонстрация вам всё пояснит.
         </p>
-        <div class="canvas canvas-distance ar-2"></div>
+        <div class="canvas-text ta-r">
+            <div>Перемещайте точки зажав <b>ЛКМ</b></div>
+        </div>
+        <div class="canvas canvas-distance ar-1"></div>
 
         <p>Как видите, у нас всегда получается треугольник <b>ABC</b>, где
             <b>AB</b> является <a href="https://w.wiki/7fU2">гипотенузой</a>. Её длину несложно вычислить по
             <a href="https://w.wiki/7axe">теореме Пифагора</a>:
             <b>AB<sup>2</sup> = AC<sup>2</sup> + BC<sup>2</sup></b>.</p>
-        <pre class="canvas-distance-pre">
-AC = A<sub>x</sub> - C<sub>x</sub> = <span data-v="ac">?</span>
-BC = B<sub>y</sub> - C<sub>y</sub> = <span data-v="bc">?</span>
-AC<sup>2</sup> + BC<sup>2</sup> = <span data-v="acbc">?</span>
-AB = <i>SquareRoot</i>(AC<sup>2</sup> + BC<sup>2</sup>) = <span data-v="ab">?</span></pre>
+        <pre class="canvas-distance-pre"></pre>
 
         <h3>Вычисление в игре</h3>
         <p>В файле

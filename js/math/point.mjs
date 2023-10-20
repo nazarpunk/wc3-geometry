@@ -5,10 +5,17 @@ export class Point {
     /**
      * @param {number} x
      * @param {number} y
+     * @param {boolean} dragX
+     * @param {boolean} dragY
      */
-    constructor(x, y) {
+    constructor(x, y, {
+        dragX = true,
+        dragY = true
+    } = {}) {
         this.x = x
         this.y = y
+        this.dragX = dragX
+        this.dragY = dragY
     }
 
     /** @type {number} */ x

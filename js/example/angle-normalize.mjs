@@ -31,7 +31,6 @@ Canvas.observe(document.querySelector('.canvas-angle-normalize'), c => {
 
     if (axis.mouseLeftX !== null) A.move(axis.mouseLeftX, axis.mouseLeftY)
     B.move(axis.mouseX, axis.mouseY)
-    AB.update()
 
     const da = Math.PI * 2 / points.length
 

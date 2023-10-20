@@ -26,9 +26,6 @@ Canvas.observe(document.querySelector('.canvas-line-point-perpendicular'), c => 
     if (axis.mouseRightX !== null) B.move(axis.mouseRightX, axis.mouseRightY)
     C.move(axis.mouseX, axis.mouseY)
 
-    AB.move(A, B)
-    AC.move(A, C)
-
     const lw = Math.max(axis.maxCountX, axis.maxCountY) * 4
 
     const [cx, cy] = LinePointPerpendicular(A.x, A.y, B.x, B.y, C.x, C.y)

@@ -66,8 +66,7 @@ h3 {
     /*noinspection CssReplaceWithShorthandSafely*/
     background: conic-gradient(at left var(--s) bottom var(--d),
     #0000 25%, #0008 0 37.5%, #0004 0) 0   /50% no-repeat,
-    conic-gradient(at right var(--s) bottom var(--d),
-            #0004 62.5%, #0008 0 75%, #0000 0) 100%/50% no-repeat;
+    conic-gradient(at right var(--s) bottom var(--d), #0004 62.5%, #0008 0 75%, #0000 0) 100%/50% no-repeat;
     clip-path: polygon(0 var(--d), var(--s) var(--d), var(--s) 0, calc(100% - var(--s)) 0, calc(100% - var(--s)) var(--d), 100% var(--d), calc(100% - var(--c)) calc(50% + var(--d) / 2), 100% 100%, calc(100% - var(--s) - var(--d)) 100%, calc(100% - var(--s) - var(--d)) calc(100% - var(--d)), calc(var(--s) + var(--d)) calc(100% - var(--d)), calc(var(--s) + var(--d)) 100%, 0 100%, var(--c) calc(50% + var(--d) / 2));
     /*noinspection CssReplaceWithShorthandSafely*/
     background-color: #470d12;
@@ -80,11 +79,18 @@ h3 {
 
 .canvas-text {
     font-family: JetBrainsMono, monospace;
+    font-size: 14px;
     height: 0;
     pointer-events: none;
     color: #848484;
-    transform: translate(1rem, 1rem);
     z-index: 10;
+    max-width: 100%;
+    box-sizing: border-box;
+    transform: translateY(1rem);
+}
+.canvas-text > div {
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .canvas {
@@ -93,7 +99,7 @@ h3 {
 
 .ar-1 {aspect-ratio: 1}
 .ar-2 {aspect-ratio: 2}
-.canvas-distance-line {height: 200px}
+.ta-r {text-align: right}
 
 .canvas > canvas {
     position: absolute;
@@ -111,6 +117,10 @@ h3 {
 
 .point b:first-child:after {
     content: ','
+}
+
+.no-ligatures {
+    font-variant-ligatures: none;
 }
 
 pre {

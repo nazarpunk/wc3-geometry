@@ -5,45 +5,22 @@ export class Segment {
      * @param {Point} b
      */
     constructor(a, b) {
-        this.move(a, b)
+        this.a = a
+        this.b = b
     }
 
-    /**
-     * @param {Point} a
-     */
-    set a(a) {
-        this.#a = a
-        this.update()
+    /** @type {Point} */ a
+    /** @type {Point} */ b
+
+    get angle() {
+        const dx = this.b.x - this.a.x
+        const dy = this.b.y - this.a.y
+        return Math.atan2(dy, dx)
     }
 
-    /**
-     * @param {Point} b
-     */
-    set b(b) {
-        this.#b = b
-        this.update()
-    }
-
-    /**
-     * @param {Point} a
-     * @param {Point} b
-     */
-    move(a, b) {
-        this.#a = a
-        this.#b = b
-        this.update()
-    }
-
-    /** @type {Point} */ #a
-    /** @type {Point} */ #b
-
-    /** @type {number} */ distance
-    /** @type {number} */ angle
-
-    update() {
-        const dx = this.#b.x - this.#a.x
-        const dy = this.#b.y - this.#a.y
-        this.angle = Math.atan2(dy, dx)
-        this.distance = Math.sqrt(dx * dx + dy * dy)
+    get distance() {
+        const dx = this.b.x - this.a.x
+        const dy = this.b.y - this.a.y
+        return Math.sqrt(dx * dx + dy * dy)
     }
 }

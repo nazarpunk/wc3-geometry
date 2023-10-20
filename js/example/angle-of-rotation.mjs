@@ -26,9 +26,6 @@ Canvas.observe(document.querySelector('.canvas-angle-of-rotation'), c => {
     if (axis.mouseRightX !== null) B.move(axis.mouseRightX, axis.mouseRightY)
     C.move(axis.mouseX, axis.mouseY)
 
-    AB.update()
-    AC.update()
-
     const R = AngleOfRotation(AB.angle, AC.angle)
 
     const dst = Math.min(AB.distance, AC.distance)

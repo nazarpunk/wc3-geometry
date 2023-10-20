@@ -28,9 +28,6 @@ Canvas.observe(document.querySelector('.canvas-line-segment-intersect'), c => {
     if (axis.mouseCenterX !== null) C.move(axis.mouseCenterX, axis.mouseCenterY)
     D.move(axis.mouseX, axis.mouseY)
 
-    AB.move(A, B)
-    CD.move(C, D)
-
     const lw = Math.max(axis.maxCountX, axis.maxCountY) * 4
 
 
