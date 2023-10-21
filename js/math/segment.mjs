@@ -13,9 +13,7 @@ export class Segment {
     /** @type {Point} */ b
 
     get angle() {
-        const dx = this.b.x - this.a.x
-        const dy = this.b.y - this.a.y
-        return Math.atan2(dy, dx)
+        return Math.atan2(this.b.y - this.a.y, this.b.x - this.a.x)
     }
 
     get distance() {
