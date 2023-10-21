@@ -3,6 +3,7 @@
 /** @typedef { import('../math/point.mjs').Point } Point */
 
 import {Color} from './color.mjs'
+import {AngleNormalize} from '../math/angle-normalize.mjs'
 
 /** @type {Map<HTMLDivElement, Grid>} */ const map = new Map()
 
@@ -331,6 +332,7 @@ export class Grid {
 
     /**
      * @param {Point} point
+     * @return {Grid}
      */
     circle(point) {
         const dpr = window.devicePixelRatio ?? 1
@@ -344,7 +346,7 @@ export class Grid {
         const ctx = this.#ctx
 
         const px = cx + point.x * step
-        const py = cx + point.y * step
+        const py = cy + point.y * step
 
         const dist = Math.sqrt((px - cx) ** 2 + (py - cy) ** 2)
         const rad = Math.atan2(-point.y, -point.x) + Math.PI
@@ -366,6 +368,7 @@ export class Grid {
 
         ctx.beginPath()
         ctx.strokeStyle = Color.point.track.fill
+        ctx.setLineDash([])
         ctx.arc(cx, cy, cr, rad, Math.PI * 2)
         ctx.stroke()
         ctx.closePath()
@@ -451,6 +454,42 @@ export class Grid {
 
         for (const t of texts) text(...t)
         ctx.restore()
+
+        return this
+    }
+
+    /**
+     * @param {Point} point
+     * @param {number} radius
+     * @param {number} a
+     * @param {number} b
+     * @param {number[]} dash
+     * @return {Grid}
+     */
+    arc(point, radius, a, b, {
+        dash = []
+    } = {}) {
+        if (AngleNormalize(b - a) < 0) [a, b] = [b, a]
+
+        const dpr = window.devicePixelRatio ?? 1
+        const step = this.#step * dpr
+
+        const cx = this.#centerX
+        const cy = this.#centerY
+
+        const ctx = this.#ctx
+
+        const px = cx + point.x * step
+        const py = cy + point.y * step
+
+        ctx.beginPath()
+        ctx.arc(px, py, radius * step, a, b)
+        ctx.setLineDash(dash)
+        ctx.strokeStyle = Color.point.stroke
+        ctx.stroke()
+        ctx.closePath()
+
+        return this
     }
 
     // === Events

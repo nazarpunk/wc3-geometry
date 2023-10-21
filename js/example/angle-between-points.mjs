@@ -1,51 +1,47 @@
-import {Canvas} from '../draw/canvas.mjs'
-import {round} from '../math/round.mjs'
-import {Axis} from '../draw/axis.mjs'
+import {Grid} from '../draw/grid.mjs'
 import {Point} from '../math/point.mjs'
-import {Segment} from '../math/segment.mjs'
-import {Color} from '../draw/color.mjs'
 
+const div = document.querySelector('.canvas-angle-between-points-div')
 const preD = document.querySelector('.canvas-angle-between-points-pre-diff')
 const preA = document.querySelector('.canvas-angle-between-points-pre-angle')
 
-const axis = new Axis()
+const grid = new Grid(document.querySelector('.canvas-angle-between-points'), () => {
+    grid.grid().dragRelease()
 
-const A = new Point(2.5, 4.5)
-const B = new Point(0, 0)
-const B1 = new Point(0, 0)
-const B2 = new Point(0, 0)
-const O = new Point(0, 0)
-
-const AB = new Segment(A, B)
-const OB1 = new Segment(O, B1)
-
-Canvas.observe(document.querySelector('.canvas-angle-between-points'), c => {
-
-    axis.draw(c, {
-        centerX: c.width * .5,
-        centerY: c.height * .5
-    })
-
-    B.move(axis.mouseX, axis.mouseY)
     B1.move(B.x - A.x, B.y - A.y)
     B2.move(A.x + AB.distance, A.y)
 
-    axis
-        .line(A, B, {color: Color.line.primary,})
-        .line(A, B2, {color: Color.axis.base, dash: [5]})
-        .line(O, B1, {color: Color.point.fill, dash: [5]})
-        .arc(O, AB.distance, 0, OB1.angle, {color: Color.point.fill, dash: [5], short: true})
-        .point(A, {name: 'A', track: true})
-        .point(O, {name: 'A1'})
-        .point(B, {
-            name: ['B', `deg: ${(OB1.angle * 180 / Math.PI).toFixed(2)}`, `rad: ${OB1.angle.toFixed(2)}`],
-            track: true
-        })
-        .point(B1, {name: 'B1', dash: [5], track: true})
-        .point(B2, {name: 'B2', track: false, color: Color.axis.base})
+    grid
+        .point(A, {name: 'A'})
+        .point(B, {name: 'B'})
+        .point(A1, {name: 'A1', dash: [2, 2]})
+        .point(B1, {name: 'B1', dash: [2, 2]})
+        .point(B2, {name: 'B2', dash: [2, 2]})
+        .segment(A, B)
+        .segment(A1, B1, {dash: [3]})
+        .segment(A, B2, {dash: [3]})
+        .arc(A, Math.min(2, AB.distance), 0, AB.angle)
+        .arc(A1, Math.min(2, AB.distance), 0, AB.angle, {dash: [5]})
 
-    preD.querySelector('[data-v=bx]').innerHTML = `${round(B.x).toFixed(2)} - ${round(A.x).toFixed(2)} = ${round(B.x - A.x).toFixed(2)}`
-    preD.querySelector('[data-v=by]').innerHTML = `${round(B.y).toFixed(2)} - ${round(A.y).toFixed(2)} = ${round(B.y - A.y).toFixed(2)}`
-    preA.querySelector('[data-v=a]').innerHTML = `<i>Atan2</i>(${round(B.y).toFixed(2)}, ${round(B.x).toFixed(2)}) = ${round(OB1.angle).toFixed(2)}`
+    preD.innerHTML = `<div><b>B1<sub>x</sub></b> = <b>B<sub>x</sub></b> - <b>A<sub>x</sub></b> = ${B.x.toFixed(2)} - ${A.x.toFixed(2)} = ${(B.x - A.x).toFixed(2)}</div>`
+    preD.innerHTML += `<div><b>B1<sub>y</sub></b> = <b>B<sub>y</sub></b> - <b>A<sub>y</sub></b> = ${B.y.toFixed(2)} - ${A.y.toFixed(2)} = ${(B.y - A.y).toFixed(2)}</div>`
 
+    const rad = Math.atan2(B1.y, B1.x)
+
+    preA.innerHTML = `<div><i>Atan2</i>(<b>B1<sub>y</sub></b>, <b>B1<sub>x</sub></b>) = <i>Atan2</i>(${B1.y.toFixed(2)}, ${B1.x.toFixed(2)}) = ${rad.toFixed(2)}</div>`
+
+    div.innerHTML = `<div>Радианы: ${rad.toFixed(2)}</div>`
+    div.innerHTML += `<div>Градусы: ${(rad * (180 / Math.PI)).toFixed(2)}</div>`
 })
+
+const A = new Point(3, 2)
+const B = new Point(7, -3)
+const A1 = new Point(0, 0)
+const B1 = new Point(0, 0)
+const B2 = new Point(0, 0)
+
+const AB = A.segment(B)
+
+grid.dragAdd(A, B)
+
+Grid.observe(grid)
