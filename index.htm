@@ -97,7 +97,9 @@
             <b>AB</b> является <a href="https://w.wiki/7fU2">гипотенузой</a>. Её длину несложно вычислить по
             <a href="https://w.wiki/7axe">теореме Пифагора</a>:
             <b>AB<sup>2</sup> = AC<sup>2</sup> + BC<sup>2</sup></b>.</p>
-        <pre class="canvas-distance-pre"></pre>
+        <pre class="canvas-distance-pre"><b>AC</b> = ?
+            <b>BC</b> = ?
+            <b>Ab</b> = ?</pre>
 
         <h3>Вычисление в игре</h3>
         <p>В файле
@@ -132,8 +134,12 @@ native MathDistanceBetweenLocations takes location fromLoc, location toLoc retur
 
         <p>Для простоты понимания, по сложившейся традиции, наша команда подготовила интерактивную демонстрацию.</p>
 
+        <div class="canvas-text">
+            <div>Перемещайте точку зажав <b>ЛКМ</b></div>
+            <br>
+            <div class="canvas-angle-div"></div>
+        </div>
         <div class="canvas canvas-angle ar-1"></div>
-
         <p>
             Чтобы не запутаться в единицах измерения будет очень полезно запомнить их обозначения:
         </p>
@@ -142,10 +148,10 @@ native MathDistanceBetweenLocations takes location fromLoc, location toLoc retur
             <li>Радианы - Radians - rad</li>
         </ul>
         <h3>Получение в игре</h3>
-        <p>В ваниле получить угол можно только у юнита.</p>
+        <p>В ваниле получить угол можно только у юнита:</p>
         <pre>constant native GetUnitFacing takes unit whichUnit returns real</pre>
         <p>В
-            <a href="https://xgm.guru/p/ujapi/UjAPI-Resource">UjAPI</a>, есстественно, функций будет немного больше.
+            <a href="https://xgm.guru/p/ujapi/UjAPI-Resource">UjAPI</a>, естественно, функций будет немного больше:
         </p>
         <pre>constant native GetUnitFacing takes unit whichUnit returns real
 native GetDoodadFacing takes doodad whichDoodad returns real
@@ -159,7 +165,7 @@ native GetFrameSpriteFacing takes framehandle whichFrame returns real</pre>
         <p>Все эти функции возвращают угол в градусах в диапазоне
             <b>0 ... 360</b>. Чтобы перевести их в радианы, можете просто умножить их на константу
             <a href="https://github.com/nazarpunk/wc3-ujapi/blob/7ee48312a9c68dd27b810054fa11c3c986178fea/sdk/blizzard.j#L18C24-L18C35">bj_DEGTORAD</a> или воспользоваться следующей нативкой из
-            <a href="https://xgm.guru/p/ujapi/UjAPI-Resource">UjAPI</a>.
+            <a href="https://xgm.guru/p/ujapi/UjAPI-Resource">UjAPI</a>:
         </p>
         <pre>native Deg2Rad takes real degrees returns real</pre>
     </div>

@@ -329,8 +329,132 @@ export class Grid {
         return this
     }
 
+    /**
+     * @param {Point} point
+     */
+    circle(point) {
+        const dpr = window.devicePixelRatio ?? 1
+        const step = this.#step * dpr
+        const pr = this.#pointRadius * dpr
+        const cr = this.#canvas.width * .5 - step * 3
+
+        const cx = this.#centerX
+        const cy = this.#centerY
+
+        const ctx = this.#ctx
+
+        const px = cx + point.x * step
+        const py = cx + point.y * step
+
+        const dist = Math.sqrt((px - cx) ** 2 + (py - cy) ** 2)
+        const rad = Math.atan2(-point.y, -point.x) + Math.PI
+        if (dist < cr) {
+            ctx.beginPath()
+            ctx.strokeStyle = Color.point.stroke
+            ctx.setLineDash([3 * dpr])
+            ctx.moveTo(
+                cx + Math.cos(rad) * (dist + pr),
+                cy + Math.sin(rad) * (dist + pr),
+            )
+            ctx.lineTo(
+                cx + Math.cos(rad) * cr,
+                cy + Math.sin(rad) * cr,
+            )
+            ctx.stroke()
+            ctx.closePath()
+        }
+
+        ctx.beginPath()
+        ctx.strokeStyle = Color.point.track.fill
+        ctx.arc(cx, cy, cr, rad, Math.PI * 2)
+        ctx.stroke()
+        ctx.closePath()
+
+        ctx.beginPath()
+        ctx.strokeStyle = Color.point.stroke
+        ctx.setLineDash([3 * dpr])
+        ctx.arc(cx, cy, cr, 0, rad)
+        ctx.stroke()
+        ctx.closePath()
+
+        ctx.beginPath()
+        ctx.strokeStyle = Color.point.stroke
+        ctx.setLineDash([3 * dpr])
+        ctx.moveTo(cx + pr, cy)
+        ctx.lineTo(cx + cr, cy)
+        ctx.stroke()
+        ctx.closePath()
+
+
+        ctx.save()
+        ctx.scale(1, -1)
+        ctx.beginPath()
+        ctx.setLineDash([])
+        ctx.strokeStyle = Color.point.track.fill
+
+        const p = 20 * dpr
+        const texts = []
+        for (let a = 360; a > 0; a -= 10) {
+            const rad = a * (Math.PI / 180)
+            const rx = cx + cr * Math.cos(rad)
+            const ry = cy + cr * Math.sin(rad)
+            const lx = cx + (cr - p) * Math.cos(rad)
+            const ly = cy + (cr - p) * Math.sin(rad)
+            if (a < 360) {
+                ctx.moveTo(rx, -ry)
+                ctx.lineTo(lx, -ly)
+            }
+            texts.push([a, lx, ly, true])
+        }
+
+        for (let rad = 0; rad < 6.29; rad += .1) {
+            const rx = cx + cr * Math.cos(rad)
+            const ry = cy + cr * Math.sin(rad)
+            const lx = cx + (cr + p) * Math.cos(rad)
+            const ly = cy + (cr + p) * Math.sin(rad)
+            ctx.moveTo(rx, -ry)
+            ctx.lineTo(lx, -ly)
+            texts.push([rad, lx, ly, false])
+        }
+
+        ctx.stroke()
+        ctx.closePath()
+
+        const text = (value, x, y, inner) => {
+            ctx.beginPath()
+            const t = inner ? value.toString() : value.toFixed(1)
+            const m = ctx.measureText(t)
+            const th = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent
+            y -= th * .5
+
+            const px = 6 * dpr
+            const py = 8 * dpr
+            let rw = m.width + px
+            let rh = th + py
+            const dt = 8 * dpr
+            const r = inner ? Math.atan2(cy - y, cx - x) : Math.atan2(y - cy, x - cx)
+            x += Math.cos(r) * dt
+            y += Math.sin(r) * dt
+
+            let rx = x - rw * .5
+            let ry = -y - th - py * .5
+
+            ctx.fillStyle = Color.point.track.fill
+            ctx.roundRect(rx, ry, rw, rh, [4 * dpr])
+            ctx.fill()
+
+            ctx.textAlign = 'center'
+            ctx.fillStyle = Color.point.track.text
+            ctx.fillText(t, x, -y)
+            ctx.closePath()
+        }
+
+        for (const t of texts) text(...t)
+        ctx.restore()
+    }
 
     // === Events
+
     #dx = 0
     #dy = 0
     /** @type {Touch} */ #touch = null
