@@ -246,7 +246,7 @@ endfunction</pre>
         <p>Для лучшего понимания интерактивная демонстрация к вашим услугам.</p>
 
         <div class="canvas-text">
-            <div>ЛКМ - Установить <b>A</b></div>
+            <div>Перемещайте точки зажав <b>ЛКМ</b></div>
         </div>
         <div class="canvas canvas-polar-offset ar-1"></div>
 
@@ -255,15 +255,15 @@ endfunction</pre>
             <b>B</b> в точку <b>B2</b> на то же расстояние под тем же углом.</p>
 
         <p>Здесь нам опять понадобится смещение <b>A</b> в
-            <span class="point"><b>0</b><b>0</b></span>. Можно воспользоваться способом, который мы применяли при
+            <b>0, 0</b>. Можно воспользоваться способом, который мы применяли при
             <a href="#angle-between-points">вычислении углов</a>:</p>
 
-        <pre><b>B1</b><sub>x</sub> = <b>B</b><sub>x</sub> - <b>A</b><sub>x</sub>
-<b>B1</b><sub>y</sub> = <b>B</b><sub>y</sub> - <b>A</b><sub>y</sub></pre>
+        <pre><b>B1<sub>x</sub></b> = <b>B<sub>x</sub></b> - <b>A<sub>x</sub></b>
+<b>B1<sub>y</sub></b> = <b>B<sub>y</sub></b> - <b>A<sub>y</sub></b></pre>
 
         <p>Хоть этот способ и прост, но он не позволяет нам изменять угол. Вот здесь на помощь приходит
-            <a href="https://w.wiki/6ML2">полярная система координат</a>. Чтоб найти точку, лежащую на расстоянии (<b>len</b>) под углом (<b>rad</b>) от
-            <span class="point"><b>0</b><b>0</b></span> нужно воспользоваться формулой:</p>
+            <a href="https://w.wiki/6ML2">полярная система координат</a>. Чтоб найти точку, лежащую на расстоянии (<b>len</b>) под углом (<b>rad</b>) от точки
+            <b>0, 0</b> нужно воспользоваться формулой:</p>
 
         <pre><b>B1</b><sub>x</sub> = <i>Cos</i>(<b>rad</b>) * <b>len</b>
 <b>B1</b><sub>y</sub> = <i>Sin</i>(<b>rad</b>) * <b>len</b></pre>
@@ -271,13 +271,13 @@ endfunction</pre>
         <p>Чтоб нить разговора не потерялась, напомню, что иы смещаем точку <b>B</b> в точку <b>B2</b> на расстояние
             <b>len</b> под углом <b>rad</b>. На данный момент мы получили точку
             <b>B1</b>, которая находится на расстоянии
-            <b>len</b> под углом <b>rad</b> от <span class="point"><b>0</b><b>0</b></span>. И если прибавить к точке
+            <b>len</b> под углом <b>rad</b> от <b>0, 0</b>. И если прибавить к точке
             <b>B1</b> координаты <b>B</b>, то мы получим точку <b>B2</b>, которая находится на расстоянии
             <b>len</b> под углом <b>rad</b> от <b>B</b>.</p>
 
         <p>Запишем итоговую формулу:</p>
-        <pre><b>B2</b><sub>x</sub> = <i>Cos</i>(<b>rad</b>) * <b>len</b> + <b>B</b><sub>x</sub>
-<b>B2</b><sub>y</sub> = <i>Sin</i>(<b>rad</b>) * <b>len</b> + <b>B</b><sub>y</sub></pre>
+        <pre><b>B2<sub>x</sub></b> = <i>Cos</i>(<b>rad</b>) * <b>len</b> + <b>B<sub>x</sub></b>
+<b>B2<sub>y</sub></b> = <i>Sin</i>(<b>rad</b>) * <b>len</b> + <b>B<sub>y</sub></b></pre>
 
         <h3>Вычисление в игре</h3>
         <p>
@@ -311,31 +311,13 @@ endfunction</pre>
         <h2 id="angle-normalize" class="header header-ribbon">Нормализация угла</h2>
         <p>
             В нашем случае нормализация это приведение любого значения угла в диапазон от <b>-&pi;</b> до
-            <b>&pi;</b>, исключая <b>-&pi;</b>.
-        </p>
-        <h3>Вычисление в игре</h3>
-        <p>Для нормализации угла функций никто не завёз, поэтому мы напишем её руками:</p>
-
-        <pre>function AngleNormalize takes real angle return real
-    if angle > -bj_PI and angle <= bj_PI then
-        return angle
-    endif
-    set angle = ModuloReal(angle + bj_PI, bj_PI * 2)
-    if angle < 0 then
-        return angle + bj_PI
-    else
-        return angle - bj_PI
-    endif
-endfunction</pre>
-
-        <h4>Зачем это нужно?</h4>
-        <p>
-            Нормализвция редкая штука, но именно здесь логичней всего о ней рассказать пока не забылись знания о
+            <b>&pi;</b>, исключая
+            <b>-&pi;</b>. Используется редко, но именно здесь логичней всего о ней рассказать пока не забылись знания о
             <a href="#polar-offset">полярном смещении</a>.
         </p>
 
         <div class="canvas-text">
-            <div>ЛКМ - Установить <b>A</b></div>
+            <div>Перемещайте точки зажав <b>ЛКМ</b></div>
         </div>
         <div class="canvas canvas-angle-normalize ar-1"></div>
 
@@ -355,6 +337,22 @@ endfunction</pre>
             <b>B<sup>*</sup></b> запредельные значения. Для проверки мы отрисовали точки
             <b>C<sup>*</sup></b> под нормализированным углом.
         </p>
+
+        <h3>Вычисление в игре</h3>
+        <p>Для нормализации угла функций никто не завёз, поэтому мы напишем её руками:</p>
+
+        <pre>function AngleNormalize takes real angle return real
+    if angle > -bj_PI and angle <= bj_PI then
+        return angle
+    endif
+    set angle = ModuloReal(angle + bj_PI, bj_PI * 2)
+    if angle < 0 then
+        return angle + bj_PI
+    else
+        return angle - bj_PI
+    endif
+endfunction</pre>
+
     </div>
 
     <!-- Угол поворота -->

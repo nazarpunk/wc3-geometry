@@ -1,42 +1,32 @@
-import {Canvas} from '../draw/canvas.mjs'
-import {Axis} from '../draw/axis.mjs'
+import {Grid} from '../draw/grid.mjs'
 import {Point} from '../math/point.mjs'
-import {Segment} from '../math/segment.mjs'
-import {Color} from '../draw/color.mjs'
 
-const axis = new Axis()
+const grid = new Grid(document.querySelector('.canvas-polar-offset'), () => {
+    grid.grid().dragRelease()
 
-const A = new Point(2.5, 3.5)
+    B1.move(B.x - A.x, B.y - A.y)
+    B2.fromPoint(B).polar(AB.angle, AB.distance)
+
+    grid
+        .point(A, {name: 'A'})
+        .point(B, {name: 'B'})
+        .point(A1, {name: 'A1', dash: [2, 2]})
+        .point(B1, {name: 'B1', dash: [2, 2]})
+        .point(B2, {name: 'B2', dash: [2, 2]})
+        .segment(A, B)
+        .segment(A1, B1, {dash: [3]})
+        .segment(B, B2, {dash: [3]})
+
+})
+
+const A = new Point(-4, -7)
+const B = new Point(3, -5)
 const A1 = new Point(0, 0)
-const B = new Point(0, 0)
 const B1 = new Point(0, 0)
 const B2 = new Point(0, 0)
 
 const AB = A.segment(B)
-const A1B1 = A1.segment(B1)
 
-Canvas.observe(document.querySelector('.canvas-polar-offset'), c => {
+grid.dragAdd(A, B)
 
-    axis.draw(c, {
-        centerX: c.width * .5,
-        centerY: c.height * .5
-    })
-
-    if (axis.mouseLeftX !== null) A.move(axis.mouseLeftX, axis.mouseLeftY)
-    B.move(axis.mouseX, axis.mouseY)
-
-    B1.fromPoint(B).subtract(A)
-
-    B2.fromPoint(B).polar(AB.angle, AB.distance)
-
-    axis
-        .line(A, B, {color: Color.line.primary})
-        .line(B, B2, {color: c.color.point.dot, dash: [5]})
-        .line(A1, B1, {color: Color.line.primary, dash: [5]})
-        .point(A, {name: 'A', track: true})
-        .point(A1, {name: 'A1'})
-        .point(B, {name: 'B', track: true})
-        .point(B1, {name: 'B1', track: true, dash: [5]})
-        .point(B2, {name: 'B2', track: true, dash: [5]})
-
-})
+Grid.observe(grid)
