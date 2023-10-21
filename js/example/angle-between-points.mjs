@@ -20,8 +20,8 @@ const grid = new Grid(document.querySelector('.canvas-angle-between-points'), ()
         .segment(A, B)
         .segment(A1, B1, {dash: [3]})
         .segment(A, B2, {dash: [3]})
-        .arc(A, Math.min(2, AB.distance), 0, AB.angle)
-        .arc(A1, Math.min(2, AB.distance), 0, AB.angle, {dash: [5]})
+        .arc(A, Math.min(1.5, AB.distance), 0, AB.angle)
+        .arc(A1, Math.min(1.5, AB.distance), 0, AB.angle, {dash: [5]})
 
     preD.innerHTML = `<div><b>B1<sub>x</sub></b> = <b>B<sub>x</sub></b> - <b>A<sub>x</sub></b> = ${B.x.toFixed(2)} - ${A.x.toFixed(2)} = ${(B.x - A.x).toFixed(2)}</div>`
     preD.innerHTML += `<div><b>B1<sub>y</sub></b> = <b>B<sub>y</sub></b> - <b>A<sub>y</sub></b> = ${B.y.toFixed(2)} - ${A.y.toFixed(2)} = ${(B.y - A.y).toFixed(2)}</div>`
