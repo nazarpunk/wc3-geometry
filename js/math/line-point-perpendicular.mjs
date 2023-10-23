@@ -8,8 +8,8 @@
  * @return {[number,number]}
  */
 export const LinePointPerpendicular = (xa, ya, xb, yb, px, py) => {
-    if (ya === yb) return [px, ya] // Прямая, паралельная оси X
-    if (xa === xb) return [xb, py] // Прямая, паралельная оси Y
+    if (ya === yb) return [px, ya] // Прямая, параллельная оси X
+    if (xa === xb) return [xb, py] // Прямая, параллельная оси Y
 
     const m = (yb - ya) / (xb - xa) // Находим угловой коэффициент прямой AB
     const c = ya - m * xa // Находим свободный член c уравнения прямой AB

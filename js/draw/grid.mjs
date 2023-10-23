@@ -1,3 +1,5 @@
+// noinspection SpellCheckingInspection
+
 /** @callback GridDraw */
 
 /** @typedef { import('../math/point.mjs').Point } Point */
@@ -296,36 +298,62 @@ export class Grid {
      * @param {Point} a
      * @param {Point} b
      * @param {number[]} dash
+     * @param {boolean} line
      * @return {Grid}
      */
     segment(a, b, {
-        dash = []
+        dash = [],
+        line = false
     } = {}) {
         const dpr = window.devicePixelRatio ?? 1
         const step = this.#step * dpr
-        const r = this.#pointRadius * dpr / step
+        const r = this.#pointRadius * dpr
         const ctx = this.#ctx
-
-        const dx = b.x - a.x
-        const dy = b.y - a.y
-        const angle = Math.atan2(dy, dx)
-        const dist = Math.sqrt(dx * dx + dy * dy) - r
 
         const cx = this.#centerX
         const cy = this.#centerY
 
-        const ax = Math.cos(angle) * r + a.x
-        const ay = Math.sin(angle) * r + a.y
-        const bx = Math.cos(angle) * dist + a.x
-        const by = Math.sin(angle) * dist + a.y
+        const ax = cx + a.x * step
+        const ay = cy + a.y * step
+        const bx = cx + b.x * step
+        const by = cy + b.y * step
+
+        const dx = bx - ax
+        const dy = by - ay
+
+        const angle = Math.atan2(dy, dx)
+        const dist = Math.sqrt(dx * dx + dy * dy) - r
 
         ctx.beginPath()
         ctx.strokeStyle = Color.point.stroke
-        ctx.moveTo(cx + ax * step, cy + ay * step)
-        ctx.lineTo(cx + bx * step, cy + by * step)
+        ctx.moveTo(
+            Math.cos(angle) * r + ax,
+            Math.sin(angle) * r + ay
+        )
+        ctx.lineTo(
+            Math.cos(angle) * dist + ax,
+            Math.sin(angle) * dist + ay
+        )
         ctx.setLineDash(dash.map(v => v * dpr))
         ctx.stroke()
         ctx.closePath()
+
+        if (line) {
+            const ld = Math.max(this.#canvas.width, this.#canvas.height) * 10
+
+            ctx.beginPath()
+            ctx.strokeStyle = Color.point.track.fill
+            let cos = Math.cos(angle)
+            let sin = Math.sin(angle)
+            ctx.moveTo(cos * r + bx, sin * r + by)
+            ctx.lineTo(cos * ld + bx, sin * ld + by)
+            cos = Math.cos(angle + Math.PI)
+            sin = Math.sin(angle + Math.PI)
+            ctx.moveTo(cos * r + ax, sin * r + ay)
+            ctx.lineTo(cos * ld + ax, sin * ld + ay)
+            ctx.stroke()
+            ctx.closePath()
+        }
 
         return this
     }
@@ -501,8 +529,7 @@ export class Grid {
 
     dragRelease() {
         if (this.#point === null) return this
-        if (this.#point.dragX) this.#point.x += this.#dx / this.#step
-        if (this.#point.dragY) this.#point.y += -this.#dy / this.#step
+        this.#point.drag(this.#dx / this.#step, -this.#dy / this.#step)
         return this
     }
 

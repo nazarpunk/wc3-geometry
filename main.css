@@ -132,6 +132,35 @@ pre {
     overflow-x: auto;
 }
 
+label {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    user-select: none;
+    background-color: #161616;
+    display: block;
+    margin: 0 0 1rem;
+}
+
+[type=checkbox] {
+    --input-background: #32a1ce;
+    --m: 0px;
+    --s: 16px;
+    display: inline-block;
+    box-sizing: border-box;
+    appearance: none;
+    width: calc(var(--s) - var(--m) * 2);
+    height: calc(var(--s) - var(--m) * 2);
+    margin: var(--m) calc(.5rem + var(--m)) var(--m) calc(var(--m));
+    vertical-align: middle;
+    border: 1px solid var(--input-background);
+}
+
+[type=checkbox]:checked {
+    --m: 4px;
+    outline: var(--m) double var(--input-background);
+    background-color: var(--input-background);
+}
+
 @media (max-width: 840px) {
     body {
         padding: 0;
@@ -148,3 +177,4 @@ pre {
         clip-path: none;
     }
 }
+

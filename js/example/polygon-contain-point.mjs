@@ -27,16 +27,16 @@ Canvas.observe(document.querySelector('.canvas-polygon-contain-point'), c => {
         grid: true
     })
 
-    if (axis.mouseLeftX !== null) points.push(new Point(axis.mouseLeftX, axis.mouseLeftY).round())
+    if (axis.mouseLeftX !== null) points.push(new Point(axis.mouseLeftX, axis.mouseLeftY).roundOld())
     if (axis.mouseRightX !== null) points.pop()
 
-    A.move(axis.mouseX, axis.mouseY).round()
+    A.move(axis.mouseX, axis.mouseY).roundOld()
 
     axis.line(A, new Point(axis.maxCountX * 2, A.y))
 
     if (points.length > 2) {
         for (let i = 0; i < points.length; i++) {
-            const p = points[i].round()
+            const p = points[i].roundOld()
             axis.point(p, {name: `P${i}`})
         }
     }

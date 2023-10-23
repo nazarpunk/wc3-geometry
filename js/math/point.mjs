@@ -12,14 +12,31 @@ export class Point {
         dragX = true,
         dragY = true
     } = {}) {
-        this.x = x
-        this.y = y
+        this.#x = x
+        this.#y = y
         this.dragX = dragX
         this.dragY = dragY
     }
 
-    /** @type {number} */ x
-    /** @type {number} */ y
+    /** @type {number} */ #x
+    /** @type {number} */ #y
+    /** @type {boolean} */ round = false
+
+    get x() {
+        return this.round ? Math.round(this.#x) : this.#x
+    }
+
+    /** @param {number} x */ set x(x) {
+        this.#x = x
+    }
+
+    get y() {
+        return this.round ? Math.round(this.#y) : this.#y
+    }
+
+    /** @param {number} y */ set y(y) {
+        this.#y = y
+    }
 
     /**
      * @param {number} x
@@ -27,8 +44,19 @@ export class Point {
      * @return {Point}
      */
     move(x, y) {
-        this.x = x
-        this.y = y
+        this.#x = x
+        this.#y = y
+        return this
+    }
+
+    /**
+     * @param {number} dx
+     * @param {number} dy
+     * @return {Point}
+     */
+    drag(dx, dy) {
+        if (this.dragX) this.#x += dx
+        if (this.dragY) this.#y += dy
         return this
     }
 
@@ -37,24 +65,18 @@ export class Point {
      * @return {Point}
      */
     fromPoint(point) {
-        this.x = point.x
-        this.y = point.y
+        this.#x = point.x
+        this.#y = point.y
         return this
     }
 
     /**
-     * @param {Point} point
+     * @deprecated
      * @return {Point}
      */
-    subtract(point) {
-        this.x -= point.x
-        this.y -= point.y
-        return this
-    }
-
-    round() {
-        this.x = Math.round(this.x)
-        this.y = Math.round(this.y)
+    roundOld() {
+        this.#x = Math.round(this.#x)
+        this.#y = Math.round(this.#y)
         return this
     }
 
@@ -64,8 +86,8 @@ export class Point {
      * @return {Point}
      */
     polar(angle, distance) {
-        this.x += Math.cos(angle) * distance
-        this.y += Math.sin(angle) * distance
+        this.#x += Math.cos(angle) * distance
+        this.#y += Math.sin(angle) * distance
         return this
     }
 
@@ -76,8 +98,8 @@ export class Point {
      */
     polarClone(angle, distance) {
         return new Point(
-            Math.cos(angle) * distance + this.x,
-            Math.sin(angle) * distance + this.y
+            Math.cos(angle) * distance + this.#x,
+            Math.sin(angle) * distance + this.#y
         )
     }
 
