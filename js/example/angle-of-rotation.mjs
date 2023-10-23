@@ -1,48 +1,60 @@
-import {Canvas} from '../draw/canvas.mjs'
-import {Axis} from '../draw/axis.mjs'
-import {round} from '../math/round.mjs'
-import {AngleOfRotation} from '../math/angle-of-rotation.mjs'
+import {Grid} from '../draw/grid.mjs'
 import {Point} from '../math/point.mjs'
-import {Segment} from '../math/segment.mjs'
-import {Color} from '../draw/color.mjs'
 
-const axis = new Axis()
+const preA = document.querySelector('.canvas-angle-of-rotation-pre-a')
+const preB = document.querySelector('.canvas-angle-of-rotation-pre-b')
+const preC = document.querySelector('.canvas-angle-of-rotation-pre-c')
 
-const A = new Point(-1.5, -2.2)
-const B = new Point(2.5, 2.5)
-const C = new Point(0, 0)
+const grid = new Grid(document.querySelector('.canvas-angle-of-rotation'), () => {
+    grid.grid().dragRelease()
 
-const AB = new Segment(A, B)
-const AC = new Segment(A, C)
+    const D = AC.angle - AB.angle
+    const TAU = Math.PI * 2
+    let ND = D
 
-Canvas.observe(document.querySelector('.canvas-angle-of-rotation'), c => {
+    preA.innerHTML = `<b>D</b> = <b>AC</b> - <b>AB</b> = ${AC.angle.toFixed(2)} - ${AB.angle.toFixed(2)} = ${D.toFixed(2)}`
 
-    axis.draw(c, {
-        centerX: c.width * .5,
-        centerY: c.height * .5
-    })
 
-    if (axis.mouseLeftX !== null) A.move(axis.mouseLeftX, axis.mouseLeftY)
-    if (axis.mouseRightX !== null) B.move(axis.mouseRightX, axis.mouseRightY)
-    C.move(axis.mouseX, axis.mouseY)
+    preB.innerHTML = `<div><b>AB</b> = ${AB.angle.toFixed(2)}</div>`
+    let s = `<div><b>D</b> = `
 
-    const R = AngleOfRotation(AB.angle, AC.angle)
+    if (D > Math.PI) {
+        ND = D - TAU
+        s += `${D.toFixed(2)} - ${TAU.toFixed(2)} = ${ND.toFixed(2)}`
+    } else if (D < -Math.PI) {
+        ND = D + TAU
+        s += `${D.toFixed(2)} + ${TAU.toFixed(2)} = ${ND.toFixed(2)}`
+    } else {
+        s += `${D.toFixed(2)}`
+    }
+    preB.innerHTML += s + '</div>'
 
-    const dst = Math.min(AB.distance, AC.distance)
+    const ae = AB.angle + ND
+    preB.innerHTML += `<div><b>AE = AB + D</b> = ${AB.angle.toFixed(2)} + ${ND.toFixed(2)} = ${ae.toFixed(2)}</div>`
 
-    const B1 = A.polarClone(AB.angle + R, AB.distance)
+    preC.innerHTML = `<div><b>AE</b> = ${ae.toFixed(2)}</div><div><b>AC</b> = ${AC.angle.toFixed(2)}</div>`
 
-    axis
-        .line(A, B1, {color: Color.line.primary, dash: [5]})
-        .line(A, B, {color: Color.line.primary})
-        .line(A, C, {color: Color.line.primary})
-        .arc(A, dst, AB.angle, AC.angle, {color: Color.line.primary})
-        .point(A, {name: 'A', track: false})
-        .point(B, {name: ['B', AB.angle.toFixed(2)], track: false})
-        .point(B1, {
-            name: ['B1', `${round(AB.angle).toFixed(2)} + ${round(R).toFixed(2)} = ${round(AB.angle + R).toFixed(2)}`],
-            track: false
-        })
-        .point(C, {name: ['C', AC.angle.toFixed(2)], track: false})
+    E.fromPoint(A).polar(AB.angle + ND, AC.distance * .5)
 
+    grid
+        .point(A, {name: 'A'})
+        .point(B, {name: 'B'})
+        .point(C, {name: 'C'})
+        .point(E, {name: 'E', dash: [2, 2]})
+        .segment(A, B)
+        .segment(A, E)
+        .segment(E, C)
+        .arc(A, Math.min(1.5, AB.distance, AC.distance), AB.angle, AC.angle)
 })
+
+const A = new Point(4, -3)
+const B = new Point(-8, -4)
+const E = new Point(0, 0)
+const C = new Point(8, 7)
+
+const AB = A.segment(B)
+const AC = A.segment(C)
+
+grid.dragAdd(A, B, C)
+
+Grid.observe(grid)

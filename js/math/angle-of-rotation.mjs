@@ -5,10 +5,7 @@
  */
 export const AngleOfRotation = (a, b) => {
     let d = b - a
-    if (d > Math.PI) {
-        return -(2 * Math.PI - d)
-    } else if (d < -Math.PI) {
-        return 2 * Math.PI + d
-    }
+    if (d > Math.PI) return d - 2 * Math.PI
+    if (d < -Math.PI) return d + 2 * Math.PI
     return d
 }
