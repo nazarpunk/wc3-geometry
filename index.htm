@@ -343,7 +343,7 @@ endfunction</pre>
         <h3>Вычисление в игре</h3>
         <p>Для нормализации угла функций никто не завёз, поэтому мы напишем её руками:</p>
 
-        <pre>function AngleNormalize takes real angle return real
+        <pre>function AngleNormalize takes real angle returns real
     if angle > -bj_PI and angle <= bj_PI then
         return angle
     endif
