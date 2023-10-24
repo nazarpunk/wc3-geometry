@@ -24,7 +24,12 @@ const grid = new Grid(document.querySelector('.canvas-line-segment-intersect'), 
 
     if (has) grid.point(E, {name: 'E'})
 
-    div.innerHTML = ` ${has ? 'Прямые <b>пересекаются</b>' : 'Прямые <b>не пересекаются</b>'}`
+    div.innerHTML = has ? 'Прямые <b>пересекаются</b>' : 'Прямые <b>не пересекаются</b>'
+    div.innerHTML += '<br>'
+    div.innerHTML += a ? 'Точка пересечения <b>лежит</b> на <b>AB</b>' : 'Точка пересечения <b>не лежит</b> на <b>AB</b>'
+    div.innerHTML += '<br>'
+    div.innerHTML += b ? 'Точка пересечения <b>лежит</b> на <b>CD</b>' : 'Точка пересечения <b>не лежит</b> на <b>CD</b>'
+
 })
 
 const A = new Point(-8, 2)
