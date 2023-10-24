@@ -33,8 +33,14 @@ export class Grid {
 
     #centerX = 0
     #centerY = 0
-    #step = 25
+
+    /** @return {number} */ get #step() {
+        const s = window.innerWidth > 800 ? 25 : 20
+        return s * (window.devicePixelRatio ?? 1)
+    }
+
     #pointRadius = 6
+
 
     /**
      * @param {?number} dx
@@ -57,7 +63,7 @@ export class Grid {
         const ctx = this.#ctx
 
         const dpr = window.devicePixelRatio ?? 1
-        const step = this.#step * dpr
+        const step = this.#step
 
         const cminx = Math.trunc(cx / step)
         const cminy = Math.trunc(cy / step)
@@ -170,7 +176,7 @@ export class Grid {
         dash = [],
     } = {}) {
         const dpr = window.devicePixelRatio ?? 1
-        const step = this.#step * dpr
+        const step = this.#step
         const r = this.#pointRadius * dpr
 
         const cx = this.#centerX
@@ -306,7 +312,7 @@ export class Grid {
         line = false
     } = {}) {
         const dpr = window.devicePixelRatio ?? 1
-        const step = this.#step * dpr
+        const step = this.#step
         const r = this.#pointRadius * dpr
         const ctx = this.#ctx
 
@@ -364,7 +370,7 @@ export class Grid {
      */
     circle(point) {
         const dpr = window.devicePixelRatio ?? 1
-        const step = this.#step * dpr
+        const step = this.#step
         const pr = this.#pointRadius * dpr
         const cr = this.#canvas.width * .5 - step * 3
 
@@ -499,8 +505,7 @@ export class Grid {
     } = {}) {
         if (AngleNormalize(b - a) < 0) [a, b] = [b, a]
 
-        const dpr = window.devicePixelRatio ?? 1
-        const step = this.#step * dpr
+        const step = this.#step
 
         const cx = this.#centerX
         const cy = this.#centerY
@@ -529,7 +534,10 @@ export class Grid {
 
     dragRelease() {
         if (this.#point === null) return this
-        this.#point.drag(this.#dx / this.#step, -this.#dy / this.#step)
+        const dpr = window.devicePixelRatio ?? 1
+        const step = this.#step
+
+        this.#point.drag(this.#dx * dpr / step, -this.#dy * dpr / step)
         return this
     }
 
@@ -553,7 +561,7 @@ export class Grid {
 
         const rect = this.#container.getBoundingClientRect()
         const dpr = window.devicePixelRatio ?? 1
-        const step = this.#step * dpr
+        const step = this.#step
 
         x = ((x - rect.x) * dpr - this.#centerX) / step
         y = (this.#canvas.height - (y - rect.y) * dpr - this.#centerY) / step
