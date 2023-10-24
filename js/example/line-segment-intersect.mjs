@@ -22,7 +22,7 @@ const grid = new Grid(document.querySelector('.canvas-line-segment-intersect'), 
         .point(C, {name: 'C'})
         .point(D, {name: 'D'})
 
-    if (has) grid.point(E, {name: 'E'})
+    if (has) grid.point(E, {name: 'E', dash: [2, 2]})
 
     div.innerHTML = has ? 'Прямые <b>пересекаются</b>' : 'Прямые <b>не пересекаются</b>'
     div.innerHTML += '<br>'
