@@ -167,6 +167,7 @@ export class Grid {
      * @param {boolean} trackY
      * @param {string?} name
      * @param {number[]} dash
+     * @param {boolean} ray
      * @return {Grid}
      */
     point(point, {
@@ -174,6 +175,7 @@ export class Grid {
         trackY = false,
         name,
         dash = [],
+        ray = false,
     } = {}) {
         const dpr = window.devicePixelRatio ?? 1
         const step = this.#step
@@ -286,6 +288,16 @@ export class Grid {
         ctx.stroke()
         ctx.closePath()
 
+        if (ray) {
+            ctx.beginPath()
+            ctx.strokeStyle = Color.point.track.fill
+            ctx.moveTo(x + r, y)
+            ctx.lineTo(this.#canvas.width, y)
+
+            ctx.stroke()
+            ctx.closePath()
+        }
+
         if ((name ?? '').length > 0) {
             ctx.beginPath()
             ctx.save()
@@ -361,6 +373,31 @@ export class Grid {
             ctx.closePath()
         }
 
+        return this
+    }
+
+    /**
+     * @param {Point[]} points
+     * @return {Grid}
+     */
+    polygon(points) {
+        if (points.length < 2) return this
+
+        const ctx = this.#ctx
+        const step = this.#step
+
+        const cx = this.#centerX
+        const cy = this.#centerY
+
+        ctx.beginPath()
+        ctx.moveTo(cx + points[0].x * step, cy + points[0].y * step)
+        for (let i = 1; i < points.length; i++) {
+            ctx.lineTo(cx + points[i].x * step, cy + points[i].y * step)
+        }
+        ctx.fillStyle = Color.polygon.fill
+        //ctx.strokeStyle = Color.polygon.stroke
+        ctx.fill('evenodd')
+        ctx.closePath()
         return this
     }
 

@@ -4,7 +4,7 @@ export const Color = {
         stroke: '#efac10',
         name: '#519bf8',
         track: {
-            fill : '#4d4444',
+            fill: '#4d4444',
             text: '#bd8a0e'
         }
     },
@@ -19,7 +19,7 @@ export const Color = {
         grid: '#282727',
     },
     polygon: {
-        fill: 'rgba(0,253,221,0.18)',
-        stroke: 'rgba(9,222,199,0.59)'
+        fill: 'rgba(0,255,255,0.18)',
+        stroke: 'rgba(5,238,213,0.48)'
     }
 }

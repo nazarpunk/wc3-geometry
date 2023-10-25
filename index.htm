@@ -558,18 +558,19 @@ endfunction</pre>
         </p>
 
         <div class="canvas-text">
-            <div>ЛКМ - Добавить точку</div>
-            <div>ПКМ - Удалить точку</div>
-            <div class="canvas-line-segment-intersect-text"></div>
+            <div>Перемещайте точки зажав <b>ЛКМ</b></div>
+            <div>Клик в пустое пространство, чтоб создать точку</div>
+            <div>Клик в точку для удаления</div>
+            <div class="canvas-polygon-contain-point-div"></div>
         </div>
         <div class="canvas canvas-polygon-contain-point ar-1"></div>
+        <label><input type="checkbox" class="canvas-polygon-contain-point-grid">Выровнять по сетке</label>
 
         <p>Мы выбрали решение, требующее меньше всего вычислений. Пускаем из искомой точки луч параллельно оси
             <b>X</b> и считаем количество пересечений с рёбрами. Если это количество чётное, то точка находится снаружи. Если нечётное, то внутри.
         </p>
 
         <p>Так же мы добавили дополнительную проверку, принадлежит ли точка ребру, чтоб избежать неопределённого поведения в отдельных случаях.</p>
-
 
         <h3>Вычисление в игре</h3>
         <p>Так как волшебный JASS не даёт передавать массивы в функцию, то мы заморочимся и напишем свой менеджер многоугольников на хэштаблицах:</p>
@@ -635,6 +636,8 @@ function PolygonContainPoint takes integer index, real x, real y returns boolean
         set bx = LoadReal(PolygonHT, index, j * 2)
         set by = LoadReal(PolygonHT, index, j * 2 + 1)
 
+        // Дополнительная проверка на пересечение с ребром.
+        // Можно безболезненно удалить для повышения производительности.
         if PolygonEdgeContainPoint(ax, ay, bx, by, x, y) then
             return true
         endif

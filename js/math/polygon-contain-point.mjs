@@ -8,10 +8,7 @@
  */
 const SegmentContainPoint = (a, b, p) => {
     if ((p.y - a.y) * (b.x - a.x) - (p.x - a.x) * (b.y - a.y) !== 0) return false
-    return Math.min(a.x, b.x) <= p.x &&
-        p.x <= Math.max(a.x, b.x) &&
-        Math.min(a.y, b.y) <= p.y &&
-        p.y <= Math.max(a.y, b.y)
+    return Math.min(a.x, b.x) <= p.x && p.x <= Math.max(a.x, b.x) && Math.min(a.y, b.y) <= p.y && p.y <= Math.max(a.y, b.y)
 }
 
 /**
