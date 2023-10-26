@@ -1,37 +1,31 @@
-import {Canvas} from '../draw/canvas.mjs'
-import {Axis} from '../draw/axis.mjs'
 import {Point} from '../math/point.mjs'
-import {ConvexHull} from '../math/convex-hull.mjs'
 import {ConvexHullJass} from '../math/convex-hull-jass.mjs'
+import {ConvexHull} from '../math/convex-hull.mjs'
+import {Grid} from '../draw/grid.mjs'
 
-const axis = new Axis()
+/** @type {HTMLInputElement} */ const checkbox = document.querySelector('.canvas-convex-hull-grid')
 
-const A = new Point(0, 0)
-
-/** @type {Point[]} */
-const points = [
-    A,
+/** @type {Point[]} */ const points = [
+    new Point(8, 0),
     new Point(5, 4),
-    new Point(-3, 3),
-    new Point(3, 4),
-    new Point(5, 6),
-    new Point(7, 8),
-    new Point(3, -4),
-    new Point(-3, -3),
+    new Point(0, 4),
+    new Point(-3, 0),
+    new Point(0, -4),
+    new Point(5, -4),
+    new Point(1, 3),
+    new Point(4, 3),
+    new Point(1, -3),
+    new Point(4, -3),
+    new Point(2, 1),
+    new Point(3, 1),
+    new Point(2, -1),
+    new Point(3, -1),
 ]
 
-Canvas.observe(document.querySelector('.canvas-convex-hull'), c => {
+const grid = new Grid(document.querySelector('.canvas-convex-hull'), () => {
+    grid.grid().dragRelease()
 
-    axis.draw(c, {
-        centerX: c.width * .5,
-        centerY: c.height * .5,
-        grid: true
-    })
-
-    if (axis.mouseLeftX !== null) points.push(new Point(axis.mouseLeftX, axis.mouseLeftY))
-    if (axis.mouseRightX !== null && points.length > 1) points.pop()
-
-    A.move(axis.mouseX, axis.mouseY)
+    for (const p of points) p.round = checkbox.checked
 
     if (points.length > 2) {
         let hull
@@ -41,16 +35,25 @@ Canvas.observe(document.querySelector('.canvas-convex-hull'), c => {
             hull = ConvexHull([...points])
         }
 
+        grid.polygon(hull)
+
         for (let i = 0, j = hull.length - 1; i < hull.length; j = i++) {
             const a = hull[i]
             const b = hull[j]
-            axis.point(a, {name: `P${i}`})
-            axis.line(a, b)
+            grid.point(a, {name: `P${i}`})
+            grid.segment(a, b)
         }
     }
 
-    for (let i = 0; i < points.length; i++) {
-        axis.point(points[i])
+    const b = [...points].filter(n => points.indexOf(n) !== -1)
+    for (let i = 0; i < b.length; i++) {
+        grid.point(b[i])
     }
 
 })
+
+for (let i = 0; i < points.length; i++) {
+    grid.dragAdd(points[i])
+}
+
+Grid.observe(grid)

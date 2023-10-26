@@ -18,10 +18,6 @@ export class Grid {
     constructor(container, draw) {
         this.#container = container
         this._redraw = this._redraw.bind(this)
-        this._mouseup = this._mouseup.bind(this)
-        this._mousemove = this._mousemove.bind(this)
-        this._touchmove = this._touchmove.bind(this)
-        this._touchend = this._touchend.bind(this)
         this.#draw = draw
     }
 
@@ -290,7 +286,7 @@ export class Grid {
 
         if (ray) {
             ctx.beginPath()
-            ctx.strokeStyle = Color.point.track.fill
+            ctx.strokeStyle = Color.point.fill
             ctx.moveTo(x + r, y)
             ctx.lineTo(this.#canvas.width, y)
 
@@ -378,9 +374,12 @@ export class Grid {
 
     /**
      * @param {Point[]} points
+     * @param {string} color
      * @return {Grid}
      */
-    polygon(points) {
+    polygon(points, {
+        color = Color.polygon.fill
+    } = {}) {
         if (points.length < 2) return this
 
         const ctx = this.#ctx
@@ -394,7 +393,7 @@ export class Grid {
         for (let i = 1; i < points.length; i++) {
             ctx.lineTo(cx + points[i].x * step, cy + points[i].y * step)
         }
-        ctx.fillStyle = Color.polygon.fill
+        ctx.fillStyle = color
         //ctx.strokeStyle = Color.polygon.stroke
         ctx.fill('evenodd')
         ctx.closePath()
@@ -566,7 +565,8 @@ export class Grid {
 
     #dx = 0
     #dy = 0
-    /** @type {Touch} */ #touch = null
+    /** @type {PointerEvent} */ #pointer = null
+    /** @type {Point[]} */ #points = []
     /** @type {Point} */ #point = null
 
     dragRelease() {
@@ -578,8 +578,6 @@ export class Grid {
         return this
     }
 
-    /** @type {Point[]} */ #points = []
-
     /**
      * @param {...Point} points
      * @return {Grid}
@@ -589,62 +587,46 @@ export class Grid {
         return this
     }
 
-    /**
-     * @param {number} x
-     * @param {number} y
-     */
-    #dragStart(x, y) {
-        if (this.#points.length === 0) return
+    /** @param {PointerEvent} e */
+    #pointerdown(e) {
+        if (!e.isPrimary) return
+        const c = this.#canvas
+        if (c === null) return
+        if (e.pointerType === 'mouse' && e.button !== 0) return
+        this.#pointer = e
+        c.setPointerCapture(e.pointerId)
 
-        const rect = this.#container.getBoundingClientRect()
-        const dpr = window.devicePixelRatio ?? 1
-        const step = this.#step
+        if (this.#points.length > 0) {
+            const rect = this.#container.getBoundingClientRect()
+            const dpr = window.devicePixelRatio ?? 1
+            const step = this.#step
 
-        x = ((x - rect.x) * dpr - this.#centerX) / step
-        y = (this.#canvas.height - (y - rect.y) * dpr - this.#centerY) / step
+            const x = ((e.clientX - rect.x) * dpr - this.#centerX) / step
+            const y = (this.#canvas.height - (e.clientY - rect.y) * dpr - this.#centerY) / step
 
-        /**
-         * @param {Point} p
-         * @return {number}
-         */
-        const dist = p => (x - p.x) ** 2 + (y - p.y) ** 2
-        this.#points.sort((a, b) => dist(a) - dist(b))
+            /**
+             * @param {Point} p
+             * @return {number}
+             */
+            const dist = p => (x - p.x) ** 2 + (y - p.y) ** 2
+            this.#points.sort((a, b) => dist(a) - dist(b))
 
-        this.#point = this.#points[0]
-    }
+            this.#point = this.#points[0]
+        }
 
-    _mouseup() {
-        this.#point = null
-        window.removeEventListener('mouseup', this._mouseup)
-        window.removeEventListener('mousemove', this._mousemove)
-    }
+        c.onpointermove = e => {
+            if (!e.isPrimary) return
+            this.#dx += e.clientX - this.#pointer.clientX
+            this.#dy += e.clientY - this.#pointer.clientY
+            this.#pointer = e
+        }
 
-    /** @param {MouseEvent} e */
-    _mousemove(e) {
-        this.#dx += e.movementX
-        this.#dy += e.movementY
-    }
-
-    /**
-     * @param {TouchEvent} e
-     */
-    _touchmove(e) {
-        if (e.touches.length > 1) return
-        if (e.changedTouches.length === 0) return
-
-        const touch = e.touches[0]
-        this.#dx += touch.clientX - this.#touch.clientX
-        this.#dy += touch.clientY - this.#touch.clientY
-
-        this.#touch = touch
-    }
-
-    /** @param {TouchEvent} e */
-    _touchend(e) {
-        if (e.touches.length > 1) return
-        this.#point = null
-        window.removeEventListener('touchmove', this._touchmove)
-        window.removeEventListener('touchend', this._touchend)
+        c.onpointerup = e => {
+            if (!e.isPrimary) return
+            this.#point = null
+            c.onpointermove = null
+            c.onpointerup = null
+        }
     }
 
     // === Visibility
@@ -695,25 +677,7 @@ export class Grid {
         this.#ctx = this.#canvas.getContext('2d')
         this.#container.appendChild(this.#canvas)
 
-        this.#canvas.addEventListener('mousedown', e => {
-            if (e.button !== 0) return
-            e.preventDefault()
-            e.stopImmediatePropagation()
-            this.#dragStart(e.clientX, e.clientY)
-            window.addEventListener('mousemove', this._mousemove)
-            window.addEventListener('mouseup', this._mouseup)
-        })
-
-        this.#canvas.addEventListener('touchstart', e => {
-            e.preventDefault()
-            e.stopPropagation()
-            if (e.touches.length > 1) return
-            this.#touch = e.touches[0]
-            this.#dragStart(this.#touch.clientX, this.#touch.clientY)
-            window.addEventListener('touchmove', this._touchmove)
-            window.addEventListener('touchend', this._touchend)
-        }, {passive: false})
-
+        this.#canvas.addEventListener('pointerdown', this.#pointerdown.bind(this))
         this._redraw()
     }
 

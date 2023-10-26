@@ -19,7 +19,7 @@ export const Color = {
         grid: '#282727',
     },
     polygon: {
-        fill: 'rgba(0,255,255,0.18)',
+        fill: 'rgba(19,140,222,0.25)',
         stroke: 'rgba(5,238,213,0.48)'
     }
 }

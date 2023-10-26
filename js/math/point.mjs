@@ -71,16 +71,6 @@ export class Point {
     }
 
     /**
-     * @deprecated
-     * @return {Point}
-     */
-    roundOld() {
-        this.#x = Math.round(this.#x)
-        this.#y = Math.round(this.#y)
-        return this
-    }
-
-    /**
      * @param {number} angle
      * @param {number} distance
      * @return {Point}
@@ -89,18 +79,6 @@ export class Point {
         this.#x += Math.cos(angle) * distance
         this.#y += Math.sin(angle) * distance
         return this
-    }
-
-    /**
-     * @param {number} angle
-     * @param {number} distance
-     * @return {Point}
-     */
-    polarClone(angle, distance) {
-        return new Point(
-            Math.cos(angle) * distance + this.#x,
-            Math.sin(angle) * distance + this.#y
-        )
     }
 
     /**
