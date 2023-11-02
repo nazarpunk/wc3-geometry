@@ -18,6 +18,7 @@
     <script type="module" src="js/example/polar-offset.mjs" defer></script>
     <script type="module" src="js/example/angle-normalize.mjs" defer></script>
     <script type="module" src="js/example/angle-of-rotation.mjs" defer></script>
+    <script type="module" src="js/example/line-slope.mjs" defer></script>
     <script type="module" src="js/example/line-point-perpendicular.mjs" defer></script>
     <script type="module" src="js/example/line-segment-intersect.mjs" defer></script>
     <script type="module" src="js/example/polygon-contain-point.mjs" defer></script>
@@ -423,6 +424,53 @@ endfunction</pre>
 endfunction</pre>
     </div>
 
+    <!-- Угловой коэффициент прямой -->
+    <div>
+        <h2 id="line-slope" class="header header-ribbon">Угловой коэффициент прямой</h2>
+        <p>Он же
+            <a href="https://w.wiki/7wsd">наклон прямой</a> численно равен тангенсу угла между положительным направлением оси абсцисс и данной прямой.
+        </p>
+        <p>Если упростить, то зачастую нужно работать не с двумя точками, а с прямой, проходящей через них. Если вычислять
+            <a href="#angle-between-points">угол между точками</a>, то важен порядок точек, что не применимо в случае прямой. Посему требуется универсальное число, обозначающее наклон прямой.
+        </p>
+
+        <div class="canvas-text">
+            <div>Перемещайте точки зажав <b>ЛКМ</b></div>
+            <div class="canvas-line-slope-div"></div>
+        </div>
+        <div class="canvas canvas-line-slope ar-1"></div>
+        <label><input type="checkbox" class="canvas-line-slope-grid">Выровнять по сетке</label>
+
+        <p>Вычисляется <a href="https://w.wiki/7wsd">угол наклона</a> довольно просто:</p>
+        <pre>k = &Delta;y / &Delta;x</pre>
+        <p>Если вы не знакомы с
+            <a href="https://w.wiki/7$Wz">дельтой</a>, то вкратце, это разница между чем либо. В нашем случае между координатами:
+        </p>
+        <pre class="canvas-line-slope-pre-a"><br></pre>
+        <p>Если вы беспокоитесь о порядке точек, то легко можно убедиться, что он не важен:</p>
+        <pre class="canvas-line-slope-pre-b"><br></pre>
+
+        <p>Учтите, что параллельная оси <b>Y</b> имеет
+            <a href="https://w.wiki/7wsd">наклон</a> равный бесконечности. В языках которые её не поддерживают это может грозить многими печалями.
+        </p>
+
+        <p>На интерактивной демонстрации выше вы можете наблюдать две прямые: <b>AB</b> и <b>AC</b> и их
+            <a href="https://w.wiki/7wsd">наклон</a> обозначенный соответственно <b>kAB</b> и
+            <b>kCD</b>. У него есть довольно интересные свойства.</p>
+
+        <p>Прямые перпендикулярны при:</p>
+        <pre><b>kAB</b> * <b>kCD</b> = -1</pre>
+
+        <p>Прямые параллельны при:</p>
+        <pre><b>kAB</b> - <b>kCD</b> = 0</pre>
+
+        <h3>Вычисление в игре</h3>
+        <p>В голом виде здесь вычислять ничего не требуется.
+            <a href="https://w.wiki/7wsd">Наклон</a> необходим для дальнейших вычислений всякого. Но если вам вдруг понадобится вычисление параллельности/перпендикулярности прямых, то вы всегда можете
+            <a href="https://xgm.guru/p/wc3/geometry">написать</a> об этом.</p>
+    </div>
+
+
     <!-- Перпендикуляр из точки к прямой -->
     <div>
         <h2 id="line-point-perpendicular" class="header header-ribbon">Перпендикуляр из точки к прямой</h2>
@@ -473,7 +521,7 @@ function LinePointPerpendicular takes real xa, real ya, real xb, real yb, real p
 
     // Находим точку пересечения перпендикулярной прямой с прямой AB
     set LinePointPerpendicularX = (cPerpendicular - c) / (m - mPerpendicular)
-    set LinePointPerpendicularY = m * xIntersection + c
+    set LinePointPerpendicularY = m * LinePointPerpendicularX + c
 endfunction</pre>
 
         <p>Данная функция принимает координаты двух точек, обозначающих прямую <b>xa</b>, <b>ya</b>, <b>xb</b>,
